@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html class="h-100">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>{% block title %}Administrace{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+            <link href="{{ asset("styles/material-dashboard.min.css") }}" rel="stylesheet" />
+            <link href="{{ asset("styles/material-icons.css") }}" rel="stylesheet" />
+            <link href="{{ asset("styles/style.css") }}" rel="stylesheet" />
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+            <script src="{{ asset("scripts/bootstrap.bundle.min.js") }}"></script>
+            <script src="{{ asset("scripts/material-dashboard.min.js") }}"></script>
+            <script src="{{ asset("scripts/tinymce/tinymce.min.js") }}"></script>
+
+            <script>
+                tinymce.init({
+                    selector: 'textarea.form-control', 
+                    plugins: [
+                        'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+                        'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
+                        'media', 'table', 'emoticons', 'template', 'help'
+                    ],
+                    toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+                        'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+                        'forecolor backcolor emoticons | help',
+                    menu: {
+                        favs: { title: 'My Favorites', items: 'code visualaid | searchreplace | emoticons' }
+                    },
+                    menubar: 'favs file edit view insert format tools table help',
+                    a_plugin_option: true,
+                    a_configuration_option: 400
+                });
+            </script>
+        {% endblock %}
+    </head>
+    <body class="bg-gray-200 h-100">
+        {% block body %}{% endblock %}
+    </body>
+</html>

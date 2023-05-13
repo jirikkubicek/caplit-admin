@@ -1,0 +1,11 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Administrace - {{ header }}{% endblock %}
+
+{% block content %}
+    <section>
+        {% include("components/_flash_messages_box.html.twig") %}
+
+        {% include("modules/_menu.html.twig") %}
+    </section>
+{% endblock %}

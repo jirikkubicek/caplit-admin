@@ -1,0 +1,28 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Administrace - {{ header }}{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                    <h4 class="text-white ps-3">{{ header|upper }}</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                {% include("components/_flash_messages_box.html.twig") %}
+
+                {% block backbtn %}
+                    <a href="{{ path(list_route_name) }}" class="btn btn-primary">Zpět na seznam</a>
+                {% endblock %} 
+
+                {% block form %}
+                    {{ form(Form) }}
+                {% endblock %}
+
+                {% block optional %}{% endblock %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

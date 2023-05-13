@@ -1,0 +1,69 @@
+:root {
+    --navigation-row-sm-height: 52px;
+}
+
+body, html{
+    margin:0;
+    padding:0;
+}
+
+body {
+    min-width: fit-content;
+}
+
+input[type="text"] {
+    border: 1px solid #d2d6da;
+}
+
+i.sort-icon {
+    vertical-align: middle !important;
+    margin-top: -5px !important;
+}
+
+ul.sticky-xl-top {
+    top: 1rem;
+}
+
+.form-control {
+    border: 1px solid #d2d6da !important;
+    padding: 0.625rem 0.75rem !important;
+}
+
+.form-select {
+    padding: 0.625rem 0.75rem !important;
+}
+
+.form-check {
+    padding-left: 0.2rem;
+}
+
+td.name {
+    max-width: 700px !important;
+}
+
+@media (max-width: 1199px) {
+    #navigation-row {
+        height: var(--navigation-row-sm-height);
+    }
+
+    #navigation.sticky-top {  /** při přidání overflow-auto odebrat **/
+        top: var(--navigation-row-sm-height);
+    }
+    
+}
+
+@media (min-width: 1200px) {
+    .h-xl-100 {
+        height: 100% !important;
+    }
+
+    #navigation-row {
+        position: relative;
+    }
+}
+
+.material-icons-round.md-18 { font-size: 18px; }
+.material-icons-round.md-24 { font-size: 24px; }
+.material-icons-round.md-36 { font-size: 36px; }
+.material-icons-round.md-48 { font-size: 48px; }
+

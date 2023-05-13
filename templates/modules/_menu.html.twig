@@ -1,0 +1,47 @@
+<div class="card my-4">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+            <h4 class="text-white ps-3">Aktuální menu</h4>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for section, data in actualMenu %}
+                <div class="card my-4 col-12 col-xl-6">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                            <h4 class="text-white ps-3">{{ section }}</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% for course, Meals in data.courses %}
+                            {% set isAllMealsInvisible = true %}
+                            {% for Meal in Meals %}
+                                {% if Meal.invisible == 0 %}
+                                    {% set isAllMealsInvisible = false %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if isAllMealsInvisible is same as false %}
+                                {% if data.show_courses is same as true %}
+                                    <h5>{{ course }}</h5>
+                                {% endif %}
+                                
+                                <ul class="list-unstyled">
+                                    {% for Meal in Meals %}
+                                        {% if Meal.invisible == 0 %}
+                                            <li class="d-flex justify-content-between">
+                                                <span>{{ Meal.name }}</span>
+                                                <span class="ps-3 text-nowrap">{{ Meal.price }},- Kč</span>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                           {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

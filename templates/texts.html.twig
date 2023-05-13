@@ -1,0 +1,73 @@
+{% extends "crm/base_list.html.twig" %}
+
+{% block title %}Administrace - {{ header }}{% endblock %}
+{% block list_header %}{{ header|upper }}{% endblock %}
+{% block addbtn %}<a href="{{ path(add_route_name) }}" class="btn btn-primary">Přidat text</a>{% endblock %}
+
+{% block table %} 
+    <table class="table table-striped table-hover">
+        <thead>
+                    
+            {% set directionParam = (app.request.get("direction")|lower == "asc") ? "desc" : "asc" %}
+            {% set directionParamIcon = (app.request.get("direction")|lower == "asc") ? "keyboard_arrow_down" : "keyboard_arrow_up" %}
+            {% set activeSortItem = app.request.get("orderBy")|lower %}
+
+            <tr class="text-center">
+                <th class="text-start ps-2">
+                    <a href="{{ path(list_route_name, {orderBy: "header", direction: (activeSortItem == "header") ? directionParam : "asc"}) }}">
+                        {{ "Nadpis"|upper }} 
+                        <i class="material-icons sort-icon">{{ (activeSortItem == "header") ? directionParamIcon : "keyboard_arrow_up" }}</i>
+                    </a>
+                </th>
+                <th>
+                    <a href="{{ path(list_route_name, {orderBy: "text_section", direction: (activeSortItem == "text_section") ? directionParam : "asc"}) }}">
+                        {{ "Sekce"|upper }} 
+                        <i class="material-icons sort-icon">{{ (activeSortItem == "text_section") ? directionParamIcon : "keyboard_arrow_up" }}</i>
+                    </a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if Entities is not defined %}
+                <tr class="align-middle">
+                    <td>Aktuálně není vytvořený žádný text</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            {% else %}
+                {% for Text in Entities %}
+                    <tr class="align-middle text-center">
+                        <td class="name text-start">{{ Text.header }}</td>
+                        <td>{{ Text.textSectionId.name }}</td>
+                        <td class="buttons">
+                            <a href="{{ path(edit_route_name, {id: Text.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
+                            <a href="{{ path(remove_route_name, {id: Text.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
+                            <a href="{{ path(add_route_name, {id: Text.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
+                        </td>
+                    </tr>                
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    
+    <style>
+        td.name {
+            min-width: 300px !important;
+            white-space: normal !important;
+        }
+
+        td.buttons {
+            white-space: normal !important;
+        }
+
+        .ws-normal {
+            white-space: normal !important;
+        }
+
+        i.sort-icon {
+            vertical-align: middle;
+            margin-top: -5px;
+        }
+    </style>
+{% endblock %}

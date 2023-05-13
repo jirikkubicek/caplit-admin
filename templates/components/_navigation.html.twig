@@ -1,0 +1,67 @@
+{% if is_granted("IS_AUTHENTICATED") %}
+    <nav class="col-xl-auto col-12 px-5 py-3 nav collapse hidden-xs d-xl-block sticky-top bg-dark" id="navigation">
+        <ul class="d-flex flex-row flex-xl-column flex-wrap justify-content-evenly align-items-baseline flex-xl-nowrap justify-content-xl-start list-unstyled w-100 sticky-xl-top">
+            <li class="nav-item">
+                <a href="{{ logout_path() }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">logout</i>
+                    <span class="nav-link-text ms-1 w-100">Odhlásit se</span>
+                </a>
+            </li>
+            <hr class="horizontal light w-100" />
+            <li class="nav-item">
+                <a href="{{ path('dashboard') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">format_list_bulleted</i>
+                    <span class="nav-link-text ms-1 w-100">Přehled</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('meal_list') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">format_list_bulleted</i>
+                    <span class="nav-link-text ms-1 w-100">Jídla</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('sections_show') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">format_list_bulleted</i>
+                    <span class="nav-link-text ms-1 w-100">Sekce</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('course_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">format_list_bulleted</i>
+                    <span class="nav-link-text ms-1 w-100">Chody</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('actions_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">format_list_bulleted</i>
+                    <span class="nav-link-text ms-1 w-100">Akce</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('texts_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">format_list_bulleted</i>
+                    <span class="nav-link-text ms-1 w-100">Texty</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('text_section_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">format_list_bulleted</i>
+                    <span class="nav-link-text ms-1 w-100">Texty - sekce</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('gallery_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">image</i>
+                    <span class="nav-link-text ms-1 w-100">Galerie</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('settings_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <i class="material-icons flex-shrink-1">settings</i>
+                    <span class="nav-link-text ms-1 w-100">Nastavení</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}

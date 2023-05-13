@@ -1,0 +1,21 @@
+{% set flashes = app.flashes %}
+{% if flashes is not empty %}
+    <div class="flash-box pb-3">
+        {% for type, flash in flashes %}
+            {% for message in flash %}
+                {% set flashColor = "" %}
+                {% if type == "success" %}
+                    {% set flashColor = "success" %}
+                {% elseif type == "error" %}
+                    {% set flashColor = "danger" %}
+                {% else %}
+                    {% set flashColor = "info" %}
+                {% endif %}
+                <div class="alert alert-dismissible text-white alert-{{ flashColor }}" role="alert">
+                    <span>{{ message }}</span>
+                    <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert">x</button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}

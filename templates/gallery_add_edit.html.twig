@@ -1,0 +1,7 @@
+{% extends "crm/base_add_edit.html.twig" %}
+
+{% block optional %}
+    {% if Form.vars.data.filename is not empty %}
+        <img src="{{ asset('uploaded/gallery/thumbnail/' ~ Form.vars.data.filename) }}" />
+    {% endif %}
+{% endblock %}
