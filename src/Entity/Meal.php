@@ -23,12 +23,12 @@ class Meal implements CloneableEntityInterface
     #[Assert\Type(type: "numeric", message: "Cena {{ value }} není ve správném formátu")]
     private ?float $price = null;
 
-    #[ORM\ManyToOne(inversedBy: 'meals')]
+    #[ORM\ManyToOne(inversedBy: 'meals', fetch: "EAGER")]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: "Sekce je povinné pole")]
     private ?Section $section = null;
 
-    #[ORM\ManyToOne(inversedBy: 'meals')]
+    #[ORM\ManyToOne(inversedBy: 'meals', fetch: "EAGER")]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: "Chod je povinné pole")]
     private ?Course $course = null;
@@ -41,7 +41,7 @@ class Meal implements CloneableEntityInterface
         return $this->id;
     }
 
-    public function resetId(): self 
+    public function resetId(): self
     {
         $this->id = null;
 
@@ -79,7 +79,11 @@ class Meal implements CloneableEntityInterface
 
     public function setSection(?Section $section): self
     {
+        $this->section?->removeMeal($this);
+
         $this->section = $section;
+
+        $this->section?->addMeal($this);
 
         return $this;
     }

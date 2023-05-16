@@ -84,15 +84,17 @@ class Users implements PasswordAuthenticatedUserInterface, UserInterface, String
         return $this;
     }
 
-    public function getRoles(): array {
+    public function getRoles(): array
+    {
         return $this->isAdmin() === true ? ["ROLE_ADMIN"] : ["ROLE_USER"];
     }
 
-    public function eraseCredentials(): void {
-
+    public function eraseCredentials(): void
+    {
     }
 
-    public function getUserIdentifier(): string {
+    public function getUserIdentifier(): string
+    {
         return $this->getUsername();
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
-interface CloneableEntityInterface {
+interface CloneableEntityInterface
+{
     public function resetId(): self;
 }

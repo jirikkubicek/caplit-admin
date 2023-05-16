@@ -34,7 +34,7 @@ class TextSection implements CloneableEntityInterface
         return $this->id;
     }
 
-    public function resetId(): self 
+    public function resetId(): self
     {
         $this->id = null;
 

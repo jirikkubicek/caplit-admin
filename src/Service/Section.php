@@ -7,29 +7,38 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use Psr\Log\LoggerInterface;
 
-class Section extends BaseCRM implements CRMServiceInterface {
+class Section extends BaseCRM implements CRMServiceInterface
+{
     /**
-     * Calls parent's __construct and sets used entity class name
-     * 
-     * @param Doctrine\ORM\EntityManagerInterface $EntityManager
-     * @param Psr\Log\LoggerInterface $Logger
+     * @param EntityManagerInterface $EntityManager
+     * @param LoggerInterface $Logger
      */
-    public function __construct(EntityManagerInterface $EntityManager, LoggerInterface $Logger) {
+    public function __construct(EntityManagerInterface $EntityManager, LoggerInterface $Logger)
+    {
         parent::__construct($EntityManager, $Logger);
         $this->setEntityClassName(SectionEntity::class);
     }
 
-    private function getDefaultSection(): SectionEntity {
+    /**
+     * @return SectionEntity
+     */
+    private function getDefaultSection(): SectionEntity
+    {
         return $this->findRecordBy(["is_default" => 1]);
     }
 
-    private function setDefaultOnChilds(PersistentCollection $Meals): string|bool {
+    /**
+     * @param PersistentCollection $Meals
+     * @return string|boolean
+     */
+    private function setDefaultOnChilds(PersistentCollection $Meals): string|bool
+    {
         $editResult = true;
 
-        foreach($Meals as $Meal) {
+        foreach ($Meals as $Meal) {
             $Meal->setSection($this->getDefaultSection());
 
-            if($editResult === true) {
+            if ($editResult === true) {
                 $editResult = $this->addOrEdit($Meal);
             }
         }
@@ -37,16 +46,20 @@ class Section extends BaseCRM implements CRMServiceInterface {
         return $editResult;
     }
 
+    /**
+     * @param object $Entity
+     * @return string|boolean
+     */
     public function remove(object $Entity): string|bool
     {
         $changeToDefault = $this->setDefaultOnChilds($Entity->getMeals());
         $removeResult = parent::remove($Entity);
 
-        if($removeResult !== true) {
+        if ($removeResult !== true) {
             return $removeResult;
-        } 
+        }
 
-        if($changeToDefault !== true) {
+        if ($changeToDefault !== true) {
             return $changeToDefault;
         }
 

@@ -39,7 +39,7 @@
                 {% for Text in Entities %}
                     <tr class="align-middle text-center">
                         <td class="name text-start">{{ Text.header }}</td>
-                        <td>{{ Text.textSectionId.name }}</td>
+                        <td>{{ Text.textSection.name }}</td>
                         <td class="buttons">
                             <a href="{{ path(edit_route_name, {id: Text.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
                             <a href="{{ path(remove_route_name, {id: Text.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>

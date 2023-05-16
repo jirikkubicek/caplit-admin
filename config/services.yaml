@@ -21,11 +21,21 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    #        - '../src/Service/BaseCRMController.php'
+
+    #App\Service\BaseCRMController:
+    #    autowire: false
+    #    calls:
+    #        - [ setContainer,[ "@service_container" ] ]
 
     App\Service\Gallery:
         arguments:
             $galleryDirectory: '%galleryDirectory%'
             $thumbnailDirectory: '%thumbnailDirectory%'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

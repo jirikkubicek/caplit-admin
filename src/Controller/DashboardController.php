@@ -9,14 +9,21 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted("IS_AUTHENTICATED")]
-class DashboardController extends AbstractController {
+class DashboardController extends AbstractController
+{
     public function __construct(private Meal $Meal)
     {
-        
     }
 
     #[Route("/dashboard", "dashboard")]
-    public function index(): Response { 
-        return $this->render("/dashboard.html.twig", ["header" => "Dashboard", "actualMenu" => $this->Meal->getActualMenu()]);
+    public function index(): Response
+    {
+        return $this->render(
+            "/dashboard.html.twig",
+            [
+                "header" => "Dashboard",
+                "actualMenu" => $this->Meal->getActualMenu()
+            ]
+        );
     }
 }

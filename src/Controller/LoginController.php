@@ -12,30 +12,33 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class LoginController extends AbstractController {
+class LoginController extends AbstractController
+{
     public function __construct(
-        private EntityManagerInterface $EntityManager, 
+        private EntityManagerInterface $EntityManager,
         private UserPasswordHasherInterface $UserPasswordHasher,
         private Security $Security
-    ) { }
+    ) {
+    }
 
     #[Route("/login", "login")]
-    public function index(Request $Request): Response {
-        if($this->Security->isGranted("IS_AUTHENTICATED")) {
+    public function index(Request $Request): Response
+    {
+        if ($this->Security->isGranted("IS_AUTHENTICATED")) {
             return $this->redirectToRoute("dashboard");
         }
 
         $LoginForm = $this->createForm(LoginType::class);
         $LoginForm->handleRequest($Request);
 
-        if($LoginForm->isSubmitted() && $LoginForm->isValid()) {
+        if ($LoginForm->isSubmitted() && $LoginForm->isValid()) {
             $username = $LoginForm->getData()["username"];
             $password = $LoginForm->getData()["password"];
 
             $User = $this->EntityManager->getRepository(Users::class)->findOneBy(["username" => $username]);
 
-            if($User !== null) {
-                if(!$this->UserPasswordHasher->isPasswordValid($User, $password)) { 
+            if ($User !== null) {
+                if (!$this->UserPasswordHasher->isPasswordValid($User, $password)) {
                     $this->addFlash("error", "Zadali jste chybné heslo.");
                 } else {
                     $this->Security->login($User, "form_login");
@@ -45,19 +48,21 @@ class LoginController extends AbstractController {
             } else {
                 $this->addFlash("error", "Uživatel nenalezen.");
             }
-        } 
+        }
 
-    return $this->render("login.html.twig", ["LoginForm" => $LoginForm, "header" => "Přihlášení"]);
+        return $this->render("login.html.twig", ["LoginForm" => $LoginForm, "header" => "Přihlášení"]);
     }
 
     #[Route("/logout", "logout")]
-    public function logout(): Response {
+    public function logout(): Response
+    {
         $this->Security->logout();
 
         return $this->redirectToRoute("login");
     }
 
-    private function createAdminUser(): void {
+    private function createAdminUser(): void
+    {
         $User = new Users();
         $User
             ->setName("Honza")

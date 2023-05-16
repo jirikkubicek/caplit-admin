@@ -19,15 +19,15 @@ class Gallery implements CloneableEntityInterface
     #[ORM\Column(length: 255)]
     private ?string $filename = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $photo_order = null;
+    #[ORM\Column(name: "photo_order", nullable: true)]
+    private ?int $photoOrder = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function resetId(): self 
+    public function resetId(): self
     {
         $this->id = null;
 
@@ -60,12 +60,12 @@ class Gallery implements CloneableEntityInterface
 
     public function getPhotoOrder(): ?int
     {
-        return $this->photo_order;
+        return $this->photoOrder;
     }
 
-    public function setPhotoOrder(?int $photo_order): self
+    public function setPhotoOrder(?int $photoOrder): self
     {
-        $this->photo_order = $photo_order;
+        $this->photoOrder = $photoOrder;
 
         return $this;
     }

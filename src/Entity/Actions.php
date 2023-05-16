@@ -19,13 +19,13 @@ class Actions implements CloneableEntityInterface
     #[Assert\NotBlank(message: "Nadpis nesmí být prázdný")]
     private ?string $header = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: "date_from", type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Assert\Type("\DateTimeInterface", message: "Platné od musí být ve formátu DD.MM.RRRR HH:MM")]
-    private ?\DateTimeInterface $date_from = null;
+    private ?\DateTimeInterface $dateFrom = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: "date_to", type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Assert\Type("\DateTimeInterface", message: "Platné od musí být ve formátu DD.MM.RRRR HH:MM")]
-    private ?\DateTimeInterface $date_to = null;
+    private ?\DateTimeInterface $dateTo = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $text = null;
@@ -35,7 +35,7 @@ class Actions implements CloneableEntityInterface
         return $this->id;
     }
 
-    public function resetId(): self 
+    public function resetId(): self
     {
         $this->id = null;
 
@@ -56,24 +56,24 @@ class Actions implements CloneableEntityInterface
 
     public function getDateFrom(): ?\DateTimeInterface
     {
-        return $this->date_from;
+        return $this->dateFrom;
     }
 
-    public function setDateFrom(?\DateTimeInterface $date_from): self
+    public function setDateFrom(?\DateTimeInterface $dateFrom): self
     {
-        $this->date_from = $date_from;
+        $this->dateFrom = $dateFrom;
 
         return $this;
     }
 
     public function getDateTo(): ?\DateTimeInterface
     {
-        return $this->date_to;
+        return $this->dateTo;
     }
 
-    public function setDateTo(?\DateTimeInterface $date_to): self
+    public function setDateTo(?\DateTimeInterface $dateTo): self
     {
-        $this->date_to = $date_to;
+        $this->dateTo = $dateTo;
 
         return $this;
     }

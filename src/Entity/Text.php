@@ -24,14 +24,14 @@ class Text implements CloneableEntityInterface
     private ?string $text = null;
 
     #[ORM\ManyToOne(inversedBy: 'texts')]
-    private ?TextSection $text_section = null;
+    private ?TextSection $textSection = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function resetId(): self 
+    public function resetId(): self
     {
         $this->id = null;
 
@@ -62,14 +62,14 @@ class Text implements CloneableEntityInterface
         return $this;
     }
 
-    public function getTextSectionId(): ?TextSection
+    public function getTextSection(): ?TextSection
     {
-        return $this->text_section;
+        return $this->textSection;
     }
 
-    public function setTextSectionId(?TextSection $text_section): self
+    public function setTextSection(?TextSection $textSection): self
     {
-        $this->text_section = $text_section;
+        $this->textSection = $textSection;
 
         return $this;
     }

@@ -21,8 +21,8 @@ class Course implements CloneableEntityInterface
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: Meal::class, orphanRemoval: false)]
     private Collection $meals;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $is_default = null;
+    #[ORM\Column(name: "is_default", nullable: true)]
+    private ?bool $isDefault = null;
 
     public function __construct()
     {
@@ -34,7 +34,7 @@ class Course implements CloneableEntityInterface
         return $this->id;
     }
 
-    public function resetId(): self 
+    public function resetId(): self
     {
         $this->id = null;
 
@@ -85,12 +85,12 @@ class Course implements CloneableEntityInterface
 
     public function isIsDefault(): ?bool
     {
-        return $this->is_default;
+        return $this->isDefault;
     }
 
     public function setIsDefault(?bool $isDefault): self
     {
-        $this->is_default = $isDefault;
+        $this->isDefault = $isDefault;
 
         return $this;
     }

@@ -25,14 +25,14 @@ class Section implements CloneableEntityInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?bool $show_courses = null;
+    #[ORM\Column(name: "show_courses")]
+    private ?bool $showCourses = null;
 
     #[ORM\OneToMany(mappedBy: 'section', targetEntity: Meal::class, orphanRemoval: false)]
     private Collection $meals;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $is_default = null;
+    #[ORM\Column(name: "is_default", nullable: true)]
+    private ?bool $isDefault = null;
 
     public function __construct()
     {
@@ -44,7 +44,7 @@ class Section implements CloneableEntityInterface
         return $this->id;
     }
 
-    public function resetId(): self 
+    public function resetId(): self
     {
         $this->id = null;
 
@@ -55,7 +55,7 @@ class Section implements CloneableEntityInterface
     {
         return $this->name;
     }
-    
+
     public function setName(?string $name): self
     {
         $this->name = $name;
@@ -77,12 +77,12 @@ class Section implements CloneableEntityInterface
 
     public function isShowCourses(): ?bool
     {
-        return $this->show_courses;
+        return $this->showCourses;
     }
 
-    public function setShowCourses(bool $show_courses): self
+    public function setShowCourses(bool $showCourses): self
     {
-        $this->show_courses = $show_courses;
+        $this->showCourses = $showCourses;
 
         return $this;
     }
@@ -119,12 +119,12 @@ class Section implements CloneableEntityInterface
 
     public function isIsDefault(): ?bool
     {
-        return $this->is_default;
+        return $this->isDefault;
     }
 
-    public function setIsDefault(?bool $is_default): self
+    public function setIsDefault(?bool $isDefault): self
     {
-        $this->is_default = $is_default;
+        $this->isDefault = $isDefault;
 
         return $this;
     }
