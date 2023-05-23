@@ -41,12 +41,12 @@ class Meal implements CRMEntityInterface
     private ?Section $section = null;
 
     /**
-     * @var Course
+     * @var Course|null
      */
     #[ORM\ManyToOne(inversedBy: 'meals', fetch: "EAGER")]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: "Chod je povinné pole")]
-    private Course $course;
+    private ?Course $course = null;
 
     /**
      * @var boolean|null
@@ -124,19 +124,21 @@ class Meal implements CRMEntityInterface
      */
     public function setSection(Section $section): self
     {
-        $this->section?->removeMeal($this);
+        if ($this->section !== $section) {
+            $this->section?->removeMeal($this);
 
-        $this->section = $section;
+            $this->section = $section;
 
-        $this->section->addMeal($this);
+            $this->section->addMeal($this);
+        }
 
         return $this;
     }
 
     /**
-     * @return Course
+     * @return Course|null
      */
-    public function getCourse(): Course
+    public function getCourse(): ?Course
     {
         return $this->course;
     }
@@ -147,11 +149,13 @@ class Meal implements CRMEntityInterface
      */
     public function setCourse(Course $course): self
     {
-        $this->course->removeMeal($this);
+        if ($this->course !== $course) {
+            $this->course?->removeMeal($this);
 
-        $this->course = $course;
+            $this->course = $course;
 
-        $this->course->addMeal($this);
+            $this->course->addMeal($this);
+        }
 
         return $this;
     }

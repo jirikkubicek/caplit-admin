@@ -26,8 +26,16 @@ final class Course extends CRMService implements CRMServiceInterface
      */
     public function remove(object $entity): bool
     {
+        $defaultCourse = $this->findOneBy(["isDefault" => 1]);
+        if (!$defaultCourse instanceof CourseEntity) {
+            throw new \Exception("At least one default course of type 'App\Entity\Course' must be created.");
+        }
+
         foreach ($entity->getMeals() as $meal) {
             $entity->removeMeal($meal);
+
+            $meal->setCourse($defaultCourse);
+            $this->addOrEdit($meal);
         }
 
         $removeChildrenResult = $entity->getMeals()->isEmpty();

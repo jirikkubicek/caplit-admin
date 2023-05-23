@@ -6,7 +6,6 @@ use App\Repository\TextSectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TextSectionRepository::class)]
@@ -41,9 +40,9 @@ class TextSection implements CRMEntityInterface
     private ?bool $isDefault = null;
 
     /**
-     * @param TextSectionRepository $repository
+     *
      */
-    public function __construct(private TextSectionRepository $repository)
+    public function __construct()
     {
         $this->texts = new ArrayCollection();
     }
@@ -113,17 +112,7 @@ class TextSection implements CRMEntityInterface
      */
     public function removeText(Text $text): self
     {
-        if ($this->texts->removeElement($text)) {
-            if ($text->getTextSection() === $this) {
-                $defaultSection = $this->repository->findOneBy(["is_default" => 1]);
-
-                if ($defaultSection === null) {
-                    throw new Exception("You have to set one default section");
-                }
-
-                $text->setTextSection($defaultSection);
-            }
-        }
+        $this->texts->removeElement($text);
 
         return $this;
     }

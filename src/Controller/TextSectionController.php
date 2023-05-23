@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\TextSection;
 use App\Form\Type\TextSectionType;
 use App\Service\CRMController;
-use App\Service\CRMService;
+use App\Service\TextSection as TextSectionService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,15 +21,13 @@ final class TextSectionController implements CRMControllerInterface
     private const REMOVE_ROUTE_NAME = "text_section_remove";
 
     /**
-     * @param CRMService $service
+     * @param TextSectionService $service
      * @param CRMController $CRM
      */
     public function __construct(
-        CRMService $service,
+        TextSectionService $service,
         private CRMController $CRM
     ) {
-        $service->setEntityClassName(TextSection::class);
-
         $this->CRM
             ->setEntityClassName(TextSection::class)
             ->setFormTypeName(TextSectionType::class)

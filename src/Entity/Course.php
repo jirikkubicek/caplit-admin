@@ -6,7 +6,6 @@ use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
 class Course implements CRMEntityInterface
@@ -38,9 +37,9 @@ class Course implements CRMEntityInterface
     private ?bool $isDefault = null;
 
     /**
-     * @param CourseRepository $repository
+     *
      */
-    public function __construct(private CourseRepository $repository)
+    public function __construct()
     {
         $this->meals = new ArrayCollection();
     }
@@ -110,17 +109,7 @@ class Course implements CRMEntityInterface
      */
     public function removeMeal(Meal $meal): self
     {
-        if ($this->meals->removeElement($meal)) {
-            if ($meal->getCourse() === $this) {
-                $defaultCourse = $this->repository->findOneBy(["is_default" => 1]);
-
-                if ($defaultCourse === null) {
-                    throw new Exception("You have to set one default course");
-                }
-
-                $meal->setCourse($defaultCourse);
-            }
-        }
+        $this->meals->removeElement($meal);
 
         return $this;
     }

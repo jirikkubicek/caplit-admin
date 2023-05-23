@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SectionRepository::class)]
@@ -54,9 +53,9 @@ class Section implements CRMEntityInterface
     private ?bool $isDefault = null;
 
     /**
-     * @param SectionRepository $repository
+     *
      */
-    public function __construct(private SectionRepository $repository)
+    public function __construct()
     {
         $this->meals = new ArrayCollection();
     }
@@ -164,17 +163,7 @@ class Section implements CRMEntityInterface
      */
     public function removeMeal(Meal $meal): self
     {
-        if ($this->meals->removeElement($meal)) {
-            if ($meal->getSection() === $this) {
-                $defaultSection = $this->repository->findOneBy(["is_default" => 1]);
-
-                if ($defaultSection === null) {
-                    throw new Exception("You have to set one default section");
-                }
-
-                $meal->setSection($defaultSection);
-            }
-        }
+        $this->meals->removeElement($meal);
 
         return $this;
     }

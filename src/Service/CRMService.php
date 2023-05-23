@@ -95,7 +95,7 @@ class CRMService implements CRMServiceInterface
      * @param object $entity
      * @return bool
      */
-    public function addOrEdit(object $entity): bool     // @todo Dle stavu zobrazí controller zprávu
+    public function addOrEdit(object $entity): bool
     {
         try {
             $this->entityManager->persist($entity);
@@ -119,7 +119,7 @@ class CRMService implements CRMServiceInterface
     public function remove(object $entity): bool
     {
         try {
-            $this->entityManager->remove($entity);      // @todo Dle stavu zobrazí controller zprávu
+            $this->entityManager->remove($entity);
             $this->entityManager->flush();
         } catch (Exception $e) {
             $exceptionMessage = $e->getMessage();

@@ -29,8 +29,8 @@ final class Meal extends CRMService implements CRMServiceInterface
          * @var MealEntity $meal
          */
         foreach ($this->findAll() as $meal) {
-            $this->actualMenu[$meal->getSection()->getName()]["show_courses"] = $meal->getSection()->isShowCourses();
-            $this->actualMenu[$meal->getSection()->getName()]["courses"][$meal->getCourse()->getName()][] = $meal;
+            $this->actualMenu[$meal->getSection()?->getName()]["show_courses"] = $meal->getSection()?->isShowCourses();
+            $this->actualMenu[$meal->getSection()?->getName()]["courses"][$meal->getCourse()?->getName()][] = $meal;
         }
     }
 

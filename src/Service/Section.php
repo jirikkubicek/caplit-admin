@@ -25,8 +25,16 @@ final class Section extends CRMService implements CRMServiceInterface
      */
     public function remove(object $entity): bool
     {
+        $defaultSection = $this->findOneBy(["isDefault" => 1]);
+        if (!$defaultSection instanceof SectionEntity) {
+            throw new \Exception("At least one default section of type 'App\Entity\Section' must be created.");
+        }
+
         foreach ($entity->getMeals() as $meal) {
             $entity->removeMeal($meal);
+
+            $meal->setSection($defaultSection);
+            $this->addOrEdit($meal);
         }
 
         $removeChildrenResult = $entity->getMeals()->isEmpty();

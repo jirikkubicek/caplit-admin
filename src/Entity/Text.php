@@ -33,10 +33,10 @@ class Text implements CRMEntityInterface
     private string $text;
 
     /**
-     * @var TextSection
+     * @var TextSection|null
      */
     #[ORM\ManyToOne(inversedBy: 'texts')]
-    private TextSection $textSection;
+    private ?TextSection $textSection = null;
 
     /**
      * @return integer|null
@@ -95,9 +95,9 @@ class Text implements CRMEntityInterface
     }
 
     /**
-     * @return TextSection
+     * @return TextSection|null
      */
-    public function getTextSection(): TextSection
+    public function getTextSection(): ?TextSection
     {
         return $this->textSection;
     }
@@ -108,11 +108,13 @@ class Text implements CRMEntityInterface
      */
     public function setTextSection(TextSection $textSection): self
     {
-        $this->textSection->removeText($this);
+        if ($this->textSection !== $textSection) {
+            $this->textSection?->removeText($this);
 
-        $this->textSection = $textSection;
+            $this->textSection = $textSection;
 
-        $this->textSection->addText($this);
+            $this->textSection->addText($this);
+        }
 
         return $this;
     }
