@@ -16,11 +16,19 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class GalleryRepository extends ServiceEntityRepository
 {
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Gallery::class);
     }
 
+    /**
+     * @param Gallery $entity
+     * @param boolean $flush
+     * @return void
+     */
     public function save(Gallery $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,11 @@ class GalleryRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Gallery $entity
+     * @param boolean $flush
+     * @return void
+     */
     public function remove(Gallery $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -38,29 +51,4 @@ class GalleryRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-//    /**
-//     * @return Gallery[] Returns an array of Gallery objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('g.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Gallery
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

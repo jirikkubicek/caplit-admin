@@ -7,10 +7,10 @@ use Symfony\Component\Form\FormInterface;
 interface CRMServiceInterface
 {
     /**
-     * @param FormInterface $Form
+     * @param FormInterface $form
      * @return void
      */
-    public function setForm(FormInterface $Form);
+    public function setForm(FormInterface $form);
 
     /**
      * @return FormInterface
@@ -18,20 +18,31 @@ interface CRMServiceInterface
     public function getForm(): FormInterface;
 
     /**
-     * @param integer $id
-     * @return object|null
+     * @param class-string<object> $entityClassName
+     * @return self
      */
-    public function findById(int $id): ?object;
+    public function setEntityClassName(string $entityClassName): self;
 
     /**
-     * @return array
+     * @return class-string<object>
+     */
+    public function getEntityClassName(): string;
+
+    /**
+     * @param array<string,mixed> $params
+     * @return object|null
+     */
+    public function findOneBy(array $params): ?object;
+
+    /**
+     * @return array<int,object>
      */
     public function findAll(): array;
 
     /**
      * @param string $orderBy
      * @param string $direction
-     * @return array
+     * @return array<int,object>
      */
     public function findAllOrdered(string $orderBy, string $direction): array;
 
@@ -39,17 +50,17 @@ interface CRMServiceInterface
      * @param string $orderBy
      * @return boolean
      */
-    public function checkEntityHasProperty(string $orderBy): bool;
+    public function entityHasProperty(string $orderBy): bool;
 
     /**
-     * @param object $Entity
-     * @return string|boolean
+     * @param object $entity
+     * @return boolean
      */
-    public function addOrEdit(object $Entity): string|bool;
+    public function addOrEdit(object $entity): bool;
 
     /**
-     * @param object $Entity
-     * @return string|boolean
+     * @param object $entity
+     * @return boolean
      */
-    public function remove(object $Entity): string|bool;
+    public function remove(object $entity): bool;
 }

@@ -13,11 +13,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MealType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array<string,mixed> $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add("name", TextType::class, ["label" => "Název"])
-            ->add("price", TextType::class, ["label" => "Cena", "required" => false])
+            ->add(
+                "name",
+                TextType::class,
+                ["label" => "Název"]
+            )
+            ->add(
+                "price",
+                TextType::class,
+                [
+                    "label" => "Cena",
+                    "required" => false
+                ]
+            )
             ->add(
                 "section",
                 ChoiceType::class,
@@ -38,28 +54,44 @@ class MealType extends AbstractType
                     "choice_label" => "name"
                 ]
             )
-            ->add("invisible", CheckboxType::class, ["label" => "Skrýt", "required" => false, "value" => 1])
-            ->add("submit", SubmitType::class, ["label" => $options["submitLabel"]]);
+            ->add(
+                "invisible",
+                CheckboxType::class,
+                [
+                    "label" => "Skrýt",
+                    "required" => false,
+                    "value" => 1
+                ]
+            )
+            ->add(
+                "submit",
+                SubmitType::class,
+                ["label" => $options["submitLabel"]]
+            );
 
         $builder->get("price")->addModelTransformer(new CallbackTransformer(
             function ($price): string {
-            // Transform saved data
                 return str_replace(".", ",", $price);
             },
             function ($price): float {
-            // Transform data before processed
                 return (float)str_replace(",", ".", $price);
             }
         ));
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            "submitLabel" => "Potvrdit",
-            "sections" => [],
-            "courses" => []
-        ]);
+        $resolver->setDefaults(
+            [
+                "submitLabel" => "Potvrdit",
+                "sections" => [],
+                "courses" => []
+            ]
+        );
 
         $resolver->setAllowedTypes("submitLabel", "string");
         $resolver->setAllowedTypes("sections", "array");

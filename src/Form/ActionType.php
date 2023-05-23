@@ -12,10 +12,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActionType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array<string,mixed> $options
+     * @return void
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add("header", TextType::class, ["label" => "Nadpis"])
+            ->add(
+                "header",
+                TextType::class,
+                ["label" => "Nadpis"]
+            )
             ->add(
                 "date_from",
                 DateTimeType::class,
@@ -36,11 +45,26 @@ class ActionType extends AbstractType
                     "widget" => "single_text"
                 ]
             )
-            ->add("text", TextareaType::class, ["label" => "Text", "required" => false])
-            ->add("submit", SubmitType::class, ["label" => $options["submitLabel"]]);
+            ->add(
+                "text",
+                TextareaType::class,
+                [
+                    "label" => "Text",
+                    "required" => false
+                ]
+            )
+            ->add(
+                "submit",
+                SubmitType::class,
+                ["label" => $options["submitLabel"]]
+            );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(["submitLabel" => "Potvrdit"]);
         $resolver->setAllowedTypes("submitLabel", "string");

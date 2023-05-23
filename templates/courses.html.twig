@@ -23,13 +23,13 @@
             </tr>
         </thead>
         <tbody>
-            {% if Entities is not defined %}
+            {% if entities is not defined %}
                 <tr class="align-middle">
                     <td>Aktuálně není vytvořen žádný chod</td>
                     <td></td>
                 </tr>
             {% else %}
-                {% for Course in Entities %}
+                {% for Course in entities %}
                     <tr class="align-middle text-center">
                         <td class="name text-start">{{ Course.name }}</td>
                         <td class="buttons">

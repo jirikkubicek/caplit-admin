@@ -4,10 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Section;
 use App\Form\Type\SectionType;
-use App\Service\BaseCRMController;
-use App\Service\BaseCRMControllerBuilder;
-use App\Service\BaseCRMControllerInterface;
-use App\Service\Messages;
+use App\Service\CRMController;
 use App\Service\Section as SectionService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,85 +12,79 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted("IS_AUTHENTICATED")]
-class SectionController
+final class SectionController implements CRMControllerInterface
 {
-    private const ROUTE_NAME_LIST = "sections_show";
-    private const ROUTE_NAME_ADD = "sections_add";
-    private const ROUTE_NAME_EDIT = "sections_edit";
-    private const ROUTE_NAME_REMOVE = "sections_remove";
-    private const ROUTE_PATH_BASE = "/sections";
+    private const BASE_ROUTE = "/sections";
+    private const LIST_ROUTE_NAME = "sections_show";
+    private const ADD_ROUTE_NAME = "sections_add";
+    private const EDIT_ROUTE_NAME = "sections_edit";
+    private const REMOVE_ROUTE_NAME = "sections_remove";
 
-    private BaseCRMControllerInterface $CRMController;
-
+    /**
+     * @param SectionService $service
+     * @param CRMController $CRM
+     */
     public function __construct(
-        private SectionService $SectionService,
-        BaseCRMControllerBuilder $BaseCRMControllerBuilder
+        SectionService $service,
+        private CRMController $CRM
     ) {
-        $this->CRMController = $BaseCRMControllerBuilder
-            ->setService($SectionService)
+        $service->setEntityClassName(Section::class);
+
+        $this->CRM
+            ->setEntityClassName(Section::class)
             ->setFormTypeName(SectionType::class)
-            ->setEntity(Section::class)
-            ->addTemplate(
-                BaseCRMController::TEMPLATES_LIST_KEY_NAME,
-                "sections.html.twig",
-                self::ROUTE_NAME_LIST
-            )
-            ->addTemplate(
-                BaseCRMController::TEMPLATES_ADD_KEY_NAME,
-                "crm/base_add_edit.html.twig",
-                self::ROUTE_NAME_ADD
-            )
-            ->addTemplate(
-                BaseCRMController::TEMPLATES_EDIT_KEY_NAME,
-                "crm/base_add_edit.html.twig",
-                self::ROUTE_NAME_EDIT
-            )
-            ->addTemplate(
-                BaseCRMController::TEMPLATES_REMOVE_KEY_NAME,
-                "",
-                self::ROUTE_NAME_REMOVE
-            )
+            ->setService($service)
+            ->setListAction(self::LIST_ROUTE_NAME, "sections.html.twig")
+            ->setAddAction(self::ADD_ROUTE_NAME)
+            ->setEditAction(self::EDIT_ROUTE_NAME)
+            ->setRemoveAction(self::REMOVE_ROUTE_NAME)
             ->addMessages([
-                [
-                    Messages::ACTION_KEY_NAME => "list",
-                    Messages::NAME_KEY_NAME => "header",
-                    Messages::MESSAGE_KEY_NAME => "Přehled sekcí"
-                ],
-                [
-                    Messages::ACTION_KEY_NAME => "add",
-                    Messages::NAME_KEY_NAME => "header",
-                    Messages::MESSAGE_KEY_NAME => "Přidání sekce"
-                ],
-                [
-                    Messages::ACTION_KEY_NAME => "edit",
-                    Messages::NAME_KEY_NAME => "header",
-                    Messages::MESSAGE_KEY_NAME => "Úprava sekce"
-                    ]
-            ])
-            ->build();
+                "list.header" => "Přehled sekcí",
+                "add.header" => "Přidání sekce",
+                "edit.header" => "Úprava sekce",
+            ]);
     }
 
-    #[Route(self::ROUTE_PATH_BASE . "/list/{orderBy}/{direction}", self::ROUTE_NAME_LIST)]
-    public function listPage(?string $orderBy = null, ?string $direction = null): Response
+    #[Route(self::BASE_ROUTE . "/list/{orderBy}/{direction}", self::LIST_ROUTE_NAME)]
+    /**
+     * @param string|null $orderBy
+     * @param string|null $direction
+     * @return Response
+     */
+    public function list(?string $orderBy = null, ?string $direction = null): Response
     {
-        return $this->CRMController->list($orderBy, $direction);
+        return $this->CRM->list($orderBy, $direction);
     }
 
-    #[Route(self::ROUTE_PATH_BASE . "/add/{id}", self::ROUTE_NAME_ADD, requirements: ["id" => "\d+"])]
-    public function addPage(Request $Request, ?int $id = null): Response
+    #[Route(self::BASE_ROUTE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
+    /**
+     * @param Request $request
+     * @param integer|null $id
+     * @return Response
+     */
+    public function add(Request $request, ?int $id = null): Response
     {
-        return $this->CRMController->add($Request, $id);
+        return $this->CRM->add($request, $id);
     }
 
-    #[Route(self::ROUTE_PATH_BASE . "/edit/{id}", self::ROUTE_NAME_EDIT, requirements: ["id" => "\d+"])]
-    public function showEditPage(Request $Request, ?int $id = null): Response
+    #[Route(self::BASE_ROUTE . "/edit/{id}", self::EDIT_ROUTE_NAME, requirements: ["id" => "\d+"])]
+    /**
+     * @param Request $request
+     * @param integer|null $id
+     * @return Response
+     */
+    public function edit(Request $request, ?int $id = null): Response
     {
-        return $this->CRMController->edit($Request, $id);
+        return $this->CRM->edit($request, $id);
     }
 
-    #[Route(self::ROUTE_PATH_BASE . "/remove/{id}", self::ROUTE_NAME_REMOVE, requirements: ["id" => "\d+"])]
-    public function showRemovePage(?int $id = null): Response
+    #[Route(self::BASE_ROUTE . "/remove/{id}", self::REMOVE_ROUTE_NAME, requirements: ["id" => "\d+"])]
+    /**
+     * @param integer|null $id
+     * @return Response
+     */
+    public function remove(?int $id = null): Response
     {
-        return $this->CRMController->remove($id);
+        return $this->CRM->remove($id);
     }
 }

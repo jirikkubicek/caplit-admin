@@ -12,13 +12,29 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TextsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array<string,mixed> $options
+     * @return void
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add("header", TextType::class, ["label" => "Nadpis", "required" => false])
-            ->add("text", TextareaType::class, ["label" => "Text"])
             ->add(
-                "text_section_id",
+                "header",
+                TextType::class,
+                [
+                    "label" => "Nadpis",
+                    "required" => false
+                ]
+            )
+            ->add(
+                "text",
+                TextareaType::class,
+                ["label" => "Text"]
+            )
+            ->add(
+                "textSection",
                 ChoiceType::class,
                 [
                     "label" => "Sekce",
@@ -28,15 +44,25 @@ class TextsType extends AbstractType
                     "required" => false
                 ]
             )
-            ->add("submit", SubmitType::class, ["label" => $options["submitLabel"]]);
+            ->add(
+                "submit",
+                SubmitType::class,
+                ["label" => $options["submitLabel"]]
+            );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            "submitLabel" => "Potvrdit",
-            "choices" => []
-        ]);
+        $resolver->setDefaults(
+            [
+                "submitLabel" => "Potvrdit",
+                "choices" => []
+            ]
+        );
 
         $resolver->setAllowedTypes("submitLabel", "string");
         $resolver->setAllowedTypes("choices", "array");

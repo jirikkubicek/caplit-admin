@@ -2,31 +2,31 @@
 
 namespace App\Service;
 
-use App\Entity\Gallery as EntityGallery;
+use App\Entity\Gallery as GalleryEntity;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class Gallery extends BaseCRM implements CRMServiceInterface
+final class Gallery extends CRMService implements CRMServiceInterface
 {
     private const THUMBNAIL_SUFIX = "";
 
     /**
      * @param string $galleryDirectory
      * @param string $thumbnailDirectory
-     * @param Image $ImageService
-     * @param EntityManagerInterface $EntityManager
-     * @param LoggerInterface $Logger
+     * @param Image $imageService
      */
     public function __construct(
         private string $galleryDirectory,
         private string $thumbnailDirectory,
-        private Image $ImageService,
-        EntityManagerInterface $EntityManager,
-        LoggerInterface $Logger
+        private Image $imageService,
+        LoggerInterface $logger,
+        EntityManagerInterface $entityManager
     ) {
-        parent::__construct($EntityManager, $Logger);
+        parent::__construct($entityManager, $logger);
 
-        $this->setEntityClassName(EntityGallery::class);
+        $this->setEntityClassName(GalleryEntity::class);
     }
 
     /**
@@ -46,21 +46,26 @@ class Gallery extends BaseCRM implements CRMServiceInterface
     }
 
     /**
-     * @param object $Entity
-     * @return string|boolean
+     * @param GalleryEntity $entity
+     * @return boolean
      */
-    public function addOrEdit(object $Entity): string|bool
+    public function addOrEdit(object $entity): bool
     {
-        $File = $this->getForm()->get("filename")->getData();
-        $newImageFilename = $this->ImageService->generateUniqueFileName($File->getClientOriginalName());
-        $oldImageFilename = $Entity->getFilename();
+        $file = $this->getForm()->get("filename")->getData();
 
-        $uploaded = $this->ImageService->upload(
-            $File,
+        if (!$file instanceof UploadedFile) {
+            throw new Exception("\$file has to be type of Symfony\Component\HttpFoundation\File\UploadedFile");
+        }
+
+        $newImageFilename = $this->imageService->generateUniqueFileName($file->getClientOriginalName());
+        $oldImageFilename = $entity->getFilename();
+
+        $uploaded = $this->imageService->upload(
+            $file,
             $this->getGalleryDirectory(),
-            $newImageFilename // upravený název s UID
+            $newImageFilename
         );
-        $thumbCreated = $this->ImageService->createThumbnail(
+        $thumbCreated = $this->imageService->createThumbnail(
             $newImageFilename,
             $this->getThumbnailDirectory(),
             $this->getGalleryDirectory(),
@@ -71,17 +76,17 @@ class Gallery extends BaseCRM implements CRMServiceInterface
 
         if ($uploaded && $thumbCreated) {
             if ($oldImageFilename !== null) {
-                $this->ImageService->delete($oldImageFilename, $this->getGalleryDirectory());
-                $this->ImageService->delete($this->ImageService->getThumbnailName(
+                $this->imageService->delete($oldImageFilename, $this->getGalleryDirectory());
+                $this->imageService->delete($this->imageService->getThumbnailName(
                     $oldImageFilename,
                     self::THUMBNAIL_SUFIX
                 ), $this->getThumbnailDirectory());
             }
 
-            $Entity->setFilename($newImageFilename);
+            $entity->setFilename($newImageFilename);
         } else {
-            $this->ImageService->delete($newImageFilename, $this->getGalleryDirectory());
-            $this->ImageService->delete($this->ImageService->getThumbnailName(
+            $this->imageService->delete($newImageFilename, $this->getGalleryDirectory());
+            $this->imageService->delete($this->imageService->getThumbnailName(
                 $newImageFilename,
                 self::THUMBNAIL_SUFIX
             ), $this->getThumbnailDirectory());
@@ -89,21 +94,21 @@ class Gallery extends BaseCRM implements CRMServiceInterface
             return false;
         }
 
-        return parent::addOrEdit($Entity);
+        return parent::addOrEdit($entity);
     }
 
     /**
-     * @param object $Entity
-     * @return string|boolean
+     * @param GalleryEntity $entity
+     * @return boolean
      */
-    public function remove(object $Entity): string|bool
+    public function remove(object $entity): bool
     {
-        $this->ImageService->delete($Entity->getFilename(), $this->getGalleryDirectory());
-        $this->ImageService->delete($this->ImageService->getThumbnailName(
-            $Entity->getFilename(),
+        $this->imageService->delete($entity->getFilename(), $this->getGalleryDirectory());
+        $this->imageService->delete($this->imageService->getThumbnailName(
+            $entity->getFilename(),
             self::THUMBNAIL_SUFIX
         ), $this->getThumbnailDirectory());
 
-        return parent::remove($Entity);
+        return parent::remove($entity);
     }
 }

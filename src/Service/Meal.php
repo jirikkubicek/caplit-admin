@@ -2,49 +2,40 @@
 
 namespace App\Service;
 
-use App\Entity\Meal as EntityMeal;
+use App\Entity\Meal as MealEntity;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class Meal extends BaseCRM implements CRMServiceInterface
+final class Meal extends CRMService implements CRMServiceInterface
 {
     /**
-     * @var array
+     * @var array<string,array<string,bool|null|array<string,MealEntity>>>
      */
     private array $actualMenu = [];
 
-    /**
-     * @param EntityManagerInterface $EntityManager
-     * @param LoggerInterface $Logger
-     * @param Section $Section
-     * @param Course $Course
-     */
-    public function __construct(
-        EntityManagerInterface $EntityManager,
-        LoggerInterface $Logger,
-        private Section $Section,
-        private Course $Course
-    ) {
-        parent::__construct($EntityManager, $Logger);
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
+    {
+        parent::__construct($entityManager, $logger);
 
-        $this->setEntityClassName(EntityMeal::class);
-
-        $this->buildActualMenu();
+        $this->setEntityClassName(MealEntity::class);
     }
 
     /**
      * @return void
      */
-    private function buildActualMenu(): void
+    public function buildActualMenu(): void
     {
-        foreach ($this->findAll() as $Meal) {
-            $this->actualMenu[$Meal->getSection()->getName()]["show_courses"] = $Meal->getSection()->isShowCourses();
-            $this->actualMenu[$Meal->getSection()->getName()]["courses"][$Meal->getCourse()->getName()][] = $Meal;
+        /**
+         * @var MealEntity $meal
+         */
+        foreach ($this->findAll() as $meal) {
+            $this->actualMenu[$meal->getSection()->getName()]["show_courses"] = $meal->getSection()->isShowCourses();
+            $this->actualMenu[$meal->getSection()->getName()]["courses"][$meal->getCourse()->getName()][] = $meal;
         }
     }
 
     /**
-     * @return array
+     * @return array<string,array<string,bool|null|array<string,MealEntity>>>
      */
     public function getActualMenu(): array
     {

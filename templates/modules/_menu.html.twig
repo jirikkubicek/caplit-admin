@@ -14,10 +14,10 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        {% for course, Meals in data.courses %}
+                        {% for course, meals in data.courses %}
                             {% set isAllMealsInvisible = true %}
-                            {% for Meal in Meals %}
-                                {% if Meal.invisible == 0 %}
+                            {% for meal in meals %}
+                                {% if meal.invisible == 0 %}
                                     {% set isAllMealsInvisible = false %}
                                 {% endif %}
                             {% endfor %}
@@ -26,13 +26,13 @@
                                 {% if data.show_courses is same as true %}
                                     <h5>{{ course }}</h5>
                                 {% endif %}
-                                
+
                                 <ul class="list-unstyled">
-                                    {% for Meal in Meals %}
-                                        {% if Meal.invisible == 0 %}
+                                    {% for meal in meals %}
+                                        {% if meal.invisible == 0 %}
                                             <li class="d-flex justify-content-between">
-                                                <span>{{ Meal.name }}</span>
-                                                <span class="ps-3 text-nowrap">{{ Meal.price }},- Kč</span>
+                                                <span>{{ meal.name }}</span>
+                                                <span class="ps-3 text-nowrap">{{ meal.price }},- Kč</span>
                                             </li>
                                         {% endif %}
                                     {% endfor %}

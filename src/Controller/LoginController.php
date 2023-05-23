@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Users;
 use App\Form\Type\LoginType;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,65 +13,106 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class LoginController extends AbstractController
+final class LoginController extends AbstractController
 {
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param Security $security
+     */
     public function __construct(
-        private EntityManagerInterface $EntityManager,
-        private UserPasswordHasherInterface $UserPasswordHasher,
-        private Security $Security
+        private EntityManagerInterface $entityManager,
+        private UserPasswordHasherInterface $userPasswordHasher,
+        private Security $security
     ) {
     }
 
     #[Route("/login", "login")]
-    public function index(Request $Request): Response
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function index(Request $request): Response
     {
-        if ($this->Security->isGranted("IS_AUTHENTICATED")) {
+        if ($this->security->isGranted("IS_AUTHENTICATED")) {
             return $this->redirectToRoute("dashboard");
         }
 
-        $LoginForm = $this->createForm(LoginType::class);
-        $LoginForm->handleRequest($Request);
+        $loginForm = $this->createForm(LoginType::class);
+        $loginForm->handleRequest($request);
 
-        if ($LoginForm->isSubmitted() && $LoginForm->isValid()) {
-            $username = $LoginForm->getData()["username"];
-            $password = $LoginForm->getData()["password"];
+        if ($loginForm->isSubmitted() && $loginForm->isValid()) {
+            $loginFormData = $loginForm->getData();
 
-            $User = $this->EntityManager->getRepository(Users::class)->findOneBy(["username" => $username]);
+            if (is_array($loginFormData) && isset($loginFormData["username"]) && isset($loginFormData["password"])) {
+                $username = $loginFormData["username"];
+                $password = $loginFormData["password"];
 
-            if ($User !== null) {
-                if (!$this->UserPasswordHasher->isPasswordValid($User, $password)) {
-                    $this->addFlash("error", "Zadali jste chybné heslo.");
-                } else {
-                    $this->Security->login($User, "form_login");
-                    $this->addFlash("success", "Vše v pořádku. Přihlášení probíhá.");
+                $user = $this->entityManager->getRepository(Users::class)->findOneBy(["username" => $username]);
+
+                if ($user !== null && $this->userPasswordHasher->isPasswordValid($user, $password)) {
+                    $this->security->login($user, "form_login");
+
+                    $this->addFlash("success", "Byl jste úspěšně přihlášen");
+
                     return $this->redirectToRoute("dashboard");
+                } else {
+                    $this->addFlash("error", "Zadali jste chybné jméno nebo heslo");
                 }
             } else {
-                $this->addFlash("error", "Uživatel nenalezen.");
+                throw new Exception("An error occurred during login");
             }
         }
 
-        return $this->render("login.html.twig", ["LoginForm" => $LoginForm, "header" => "Přihlášení"]);
+        return $this->render(
+            "login.html.twig",
+            [
+                "loginForm" => $loginForm,
+                "header" => "Přihlášení"
+            ]
+        );
     }
 
     #[Route("/logout", "logout")]
+    /**
+     * @return Response
+     */
     public function logout(): Response
     {
-        $this->Security->logout();
+        $this->addFlash("success", "Byl jste úspěšně odhlášen");
+
+        $this->security->logout(false);
 
         return $this->redirectToRoute("login");
     }
 
-    private function createAdminUser(): void
+    /**
+     * @param Users $user
+     * @return Response
+     */
+    private function registerUser(Users $user): Response
     {
-        $User = new Users();
-        $User
-            ->setName("Honza")
-            ->setUsername("admin")
-            ->setPassword($this->UserPasswordHasher->hashPassword($User, "heslo"))
-            ->setEmail("jiri@kubickovi.cz");
+        $userAlreadyExists = $this->entityManager
+            ->getRepository(Users::class)
+            ->findOneBy(["username" => $user->getUsername()]) !== null;
+        if ($userAlreadyExists === true) {
+            $this->addFlash("error", "Uživatel s tímto jménem již existuje");
+            return $this->redirectToRoute("login");
+        }
 
-        $this->EntityManager->persist($User);
-        $this->EntityManager->flush();
+        $password = (string) $user->getPassword();
+        $hashedPassword = $this->userPasswordHasher->hashPassword($user, $password);
+        $user->setPassword($hashedPassword);
+
+        try {
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            $this->addFlash("error", "Registrace se nezdařila");
+            return $this->redirectToRoute("login");
+        }
+
+        $this->addFlash("success", "Byl jste úspěšně zaregistrován");
+        return $this->redirectToRoute("login");
     }
 }

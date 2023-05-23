@@ -21,7 +21,7 @@
                 </th>
                 <th>
                     <a href="{{ path(list_route_name, {orderBy: "text_section", direction: (activeSortItem == "text_section") ? directionParam : "asc"}) }}">
-                        {{ "Sekce"|upper }} 
+                        {{ "Sekce"|upper }}
                         <i class="material-icons sort-icon">{{ (activeSortItem == "text_section") ? directionParamIcon : "keyboard_arrow_up" }}</i>
                     </a>
                 </th>
@@ -29,21 +29,21 @@
             </tr>
         </thead>
         <tbody>
-            {% if Entities is not defined %}
+            {% if entities is not defined %}
                 <tr class="align-middle">
                     <td>Aktuálně není vytvořený žádný text</td>
                     <td></td>
                     <td></td>
                 </tr>
             {% else %}
-                {% for Text in Entities %}
+                {% for text in entities %}
                     <tr class="align-middle text-center">
-                        <td class="name text-start">{{ Text.header }}</td>
-                        <td>{{ Text.textSection.name }}</td>
+                        <td class="name text-start">{{ text.header }}</td>
+                        <td>{{ text.textSection.name }}</td>
                         <td class="buttons">
-                            <a href="{{ path(edit_route_name, {id: Text.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
-                            <a href="{{ path(remove_route_name, {id: Text.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
-                            <a href="{{ path(add_route_name, {id: Text.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
+                            <a href="{{ path(edit_route_name, {id: text.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
+                            <a href="{{ path(remove_route_name, {id: text.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
+                            <a href="{{ path(add_route_name, {id: text.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
                         </td>
                     </tr>                
                 {% endfor %}

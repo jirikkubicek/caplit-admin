@@ -8,29 +8,47 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TextRepository::class)]
-class Text implements CloneableEntityInterface
+class Text implements CRMEntityInterface
 {
+    /**
+     * @var integer|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255, maxMessage: "Maximální délka nadpisu je 255 znaků")]
     private ?string $header = null;
 
+    /**
+     * @var string
+     */
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: "Text nesmí být prázdný")]
-    private ?string $text = null;
+    private string $text;
 
+    /**
+     * @var TextSection
+     */
     #[ORM\ManyToOne(inversedBy: 'texts')]
-    private ?TextSection $textSection = null;
+    private TextSection $textSection;
 
+    /**
+     * @return integer|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return self
+     */
     public function resetId(): self
     {
         $this->id = null;
@@ -38,11 +56,18 @@ class Text implements CloneableEntityInterface
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getHeader(): ?string
     {
         return $this->header;
     }
 
+    /**
+     * @param string|null $header
+     * @return self
+     */
     public function setHeader(?string $header): self
     {
         $this->header = $header;
@@ -50,11 +75,18 @@ class Text implements CloneableEntityInterface
         return $this;
     }
 
-    public function getText(): ?string
+    /**
+     * @return string
+     */
+    public function getText(): string
     {
         return $this->text;
     }
 
+    /**
+     * @param string $text
+     * @return self
+     */
     public function setText(string $text): self
     {
         $this->text = $text;
@@ -62,14 +94,25 @@ class Text implements CloneableEntityInterface
         return $this;
     }
 
-    public function getTextSection(): ?TextSection
+    /**
+     * @return TextSection
+     */
+    public function getTextSection(): TextSection
     {
         return $this->textSection;
     }
 
-    public function setTextSection(?TextSection $textSection): self
+    /**
+     * @param TextSection $textSection
+     * @return self
+     */
+    public function setTextSection(TextSection $textSection): self
     {
+        $this->textSection->removeText($this);
+
         $this->textSection = $textSection;
+
+        $this->textSection->addText($this);
 
         return $this;
     }

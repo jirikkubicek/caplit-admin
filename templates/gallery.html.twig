@@ -25,21 +25,21 @@
             </tr>
         </thead>
         <tbody class="align-middle">
-            {% if Entities is not defined %}
+            {% if entities is not defined %}
                 <tr class="align-middle">
                     <td colspan="2">Aktuálně není nahrán žádný obrázek</td>
                     <td></td>
                     <td></td>
                 </tr>
             {% else %}
-                {% for Picture in Entities %}
+                {% for picture in entities %}
                     <tr class="align-middle text-center">
-                        <td class="thumbnail"><img src="{{ asset('uploaded/gallery/thumbnail/' ~ Picture.filename) }}" /></td>
-                        <td class="ps-3">{{ Picture.title }}</td>
-                        <td>{{ Picture.photoOrder }}</td>
+                        <td class="thumbnail"><img src="{{ asset('uploaded/gallery/thumbnail/' ~ picture.filename) }}" /></td>
+                        <td class="ps-3">{{ picture.title }}</td>
+                        <td>{{ picture.photoOrder }}</td>
                         <td class="buttons">
-                            <a href="{{ path(edit_route_name, {id: Picture.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
-                            <a href="{{ path(remove_route_name, {id: Picture.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
+                            <a href="{{ path(edit_route_name, {id: picture.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
+                            <a href="{{ path(remove_route_name, {id: picture.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
                         </td>
                     </tr>                
                 {% endfor %}

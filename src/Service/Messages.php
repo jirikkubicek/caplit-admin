@@ -2,57 +2,51 @@
 
 namespace App\Service;
 
-class Messages implements MessagesInterface
-{
-    public const ACTION_KEY_NAME = "action";
-    public const NAME_KEY_NAME = "name";
-    public const TYPE_KEY_NAME = "type";
-    public const MESSAGE_KEY_NAME = "message";
+use Exception;
 
+final class Messages implements MessagesInterface
+{
     /**
-     * @var array
+     * @var array<string,string|array<string,string>>
      */
     private array $messages = [];
 
     /**
      * @param string $name
      * @param string $message
-     * @param string $action
-     * @param string|null $type
+     * @param string $type
      * @return self
      */
-    public function add(string $name, string $message, string $action = "general", ?string $type = null): self
+    public function add(string $name, string $message, string $type = ""): self
     {
-        if ($type === null) {
-            $this->messages[$action][$name] = $message;
-        } else {
-            $this->messages[$action][$name][$type] = $message;
-        }
+        $this->messages[$name] = ["message" => $message, "type" => $type];
 
         return $this;
     }
 
     /**
-     * @param array $messages
+     * @param array<string,string|array<string,string>> $messages
      * @return self
+     * @throws Exception
      */
     public function addMessages(array $messages): self
     {
-        foreach ($messages as $message) {
-            if (isset($message[self::ACTION_KEY_NAME])) {
-                $this->add(
-                    name: $message[self::NAME_KEY_NAME],
-                    message: $message[self::MESSAGE_KEY_NAME],
-                    action: $message[self::ACTION_KEY_NAME],
-                    type: (isset($message[self::TYPE_KEY_NAME]) ? $message[self::TYPE_KEY_NAME] : null)
-                );
-            } else {
-                $this->add(
-                    name: $message[self::NAME_KEY_NAME],
-                    message: $message[self::MESSAGE_KEY_NAME],
-                    type: (isset($message[self::TYPE_KEY_NAME]) ? $message[self::TYPE_KEY_NAME] : null)
-                );
+        foreach ($messages as $name => $messageContent) {
+            $messageType = "";
+            $message = "";
+            if (isset($messageContent["type"])) {
+                $messageType = $messageContent["type"];
             }
+
+            if (isset($messageContent["message"])) {
+                $message = $messageContent["message"];
+            } elseif (is_string($messageContent)) {
+                $message = $messageContent;
+            } else {
+                throw new Exception("Variable \$messages must have name of message in key and message content in value or must contains array with format \"type\" = (string) \$messageType and \"message\" = (string) \$messageContent");
+            }
+
+            $this->add($name, $message, $messageType);
         }
 
         return $this;
@@ -60,16 +54,36 @@ class Messages implements MessagesInterface
 
     /**
      * @param string $name
-     * @param string $action
-     * @param string|null $type
      * @return string
      */
-    public function get(string $name, string $action = "general", ?string $type = null): string
+    public function get(string $name): string
     {
-        if ($type === null) {
-            return (isset($this->messages[$action][$name])) ? $this->messages[$action][$name] : "";
+        if (isset($this->messages[$name]["message"])) {
+            return $this->messages[$name]["message"];
         } else {
-            return (isset($this->messages[$action][$name][$type])) ? $this->messages[$action][$name][$type] : "";
+            throw new Exception(
+                sprintf(
+                    "Message key '%s' doesn't exists. Did you mean one of these %s?",
+                    $name,
+                    $this->guessMessageName($name)
+                )
+            );
         }
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    private function guessMessageName(string $name): string
+    {
+        $options = [];
+        foreach ($this->messages as $existingName => $messageContent) {
+            if (levenshtein($name, $existingName) <= 5) {
+                $options[] = "'" . $existingName . "'";
+            }
+        }
+
+        return implode(", ", $options);
     }
 }

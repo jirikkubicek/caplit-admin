@@ -10,16 +10,33 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CourseType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array<string,mixed> $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add("name", TextType::class, ["label" => "Název: "])
-            ->add("submit", SubmitType::class, ["label" => $options["submitLabel"]]);
+        $builder
+            ->add(
+                "name",
+                TextType::class,
+                ["label" => "Název: "]
+            )
+            ->add(
+                "submit",
+                SubmitType::class,
+                ["label" => $options["submitLabel"]]
+            );
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault("submitLabel", "Potvrdit");
-
         $resolver->setAllowedTypes("submitLabel", "string");
     }
 }

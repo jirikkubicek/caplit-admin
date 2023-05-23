@@ -23,19 +23,19 @@
             </tr>
         </thead>
         <tbody>
-            {% if Entities is not defined %}
+            {% if entities is not defined %}
                 <tr class="align-middle">
                     <td>Aktuálně není vytvořena žádná sekce</td>
                     <td></td>
                 </tr>
             {% else %}
-                {% for Section in Entities %}
+                {% for section in entities %}
                     <tr class="align-middle text-center">
-                        <td class="name text-start">{{ Section.name }}</td>
+                        <td class="name text-start">{{ section.name }}</td>
                         <td class="buttons">
-                            <a href="{{ path(edit_route_name, {id: Section.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
-                            <a href="{{ path(remove_route_name, {id: Section.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
-                            <a href="{{ path(add_route_name, {id: Section.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
+                            <a href="{{ path(edit_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
+                            <a href="{{ path(remove_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
+                            <a href="{{ path(add_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
                         </td>
                     </tr>                
                 {% endfor %}

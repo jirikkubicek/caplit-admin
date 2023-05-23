@@ -4,96 +4,87 @@ namespace App\Controller;
 
 use App\Entity\Course as CourseEntity;
 use App\Form\Type\CourseType;
-use App\Service\BaseCRMController;
-use App\Service\BaseCRMControllerBuilder;
-use App\Service\BaseCRMControllerInterface;
 use App\Service\Course;
-use App\Service\Messages;
+use App\Service\CRMController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted("IS_AUTHENTICATED")]
-class CourseController
+final class CourseController implements CRMControllerInterface
 {
-    private const ROUTE_BASE = "/course";
+    private const BASE_ROUTE = "/course";
     private const LIST_ROUTE_NAME = "course_list";
     private const ADD_ROUTE_NAME = "course_add";
     private const EDIT_ROUTE_NAME = "course_edit";
     private const REMOVE_ROUTE_NAME = "course_remove";
 
-    private BaseCRMControllerInterface $CRMController;
-
+    /**
+     * @param Course $service
+     * @param CRMController $CRM
+     */
     public function __construct(
-        Course $Course,
-        BaseCRMControllerBuilder $BaseCRMControllerBuilder
+        Course $service,
+        private CRMController $CRM
     ) {
-        $this->CRMController = $BaseCRMControllerBuilder
-            ->setService($Course)
+        $service->setEntityClassName(CourseEntity::class);
+
+        $this->CRM
+            ->setEntityClassName(CourseEntity::class)
             ->setFormTypeName(CourseType::class)
-            ->setEntity(CourseEntity::class)
-            ->addTemplate(
-                BaseCRMController::TEMPLATES_LIST_KEY_NAME,
-                "courses.html.twig",
-                self::LIST_ROUTE_NAME
-            )
-            ->addTemplate(
-                BaseCRMController::TEMPLATES_ADD_KEY_NAME,
-                "crm/base_add_edit.html.twig",
-                self::ADD_ROUTE_NAME
-            )
-            ->addTemplate(
-                BaseCRMController::TEMPLATES_EDIT_KEY_NAME,
-                "crm/base_add_edit.html.twig",
-                self::EDIT_ROUTE_NAME
-            )
-            ->addTemplate(
-                BaseCRMController::TEMPLATES_REMOVE_KEY_NAME,
-                "",
-                self::REMOVE_ROUTE_NAME
-            )
+            ->setService($service)
+            ->setListAction(self::LIST_ROUTE_NAME, "courses.html.twig")
+            ->setAddAction(self::ADD_ROUTE_NAME)
+            ->setEditAction(self::EDIT_ROUTE_NAME)
+            ->setRemoveAction(self::REMOVE_ROUTE_NAME)
             ->addMessages([
-                [
-                    Messages::ACTION_KEY_NAME => "list",
-                    Messages::NAME_KEY_NAME => "header",
-                    Messages::MESSAGE_KEY_NAME => "Přehled chodů"
-                ],
-                [
-                    Messages::ACTION_KEY_NAME => "add",
-                    Messages::NAME_KEY_NAME => "header",
-                    Messages::MESSAGE_KEY_NAME => "Přidání chodu"
-                ],
-                [
-                    Messages::ACTION_KEY_NAME => "edit",
-                    Messages::NAME_KEY_NAME => "header",
-                    Messages::MESSAGE_KEY_NAME => "Úprava chodu"
-                ]
-            ])
-            ->build();
+                "list.header" => "Přehled chodů",
+                "add.header" => "Přidání chodu",
+                "edit.header" => "Úprava chodu",
+            ]);
     }
 
-    #[Route(self::ROUTE_BASE . "/list/{orderBy}/{direction}", self::LIST_ROUTE_NAME)]
-    public function listPage(?string $orderBy = null, ?string $direction = null): Response
+    #[Route(self::BASE_ROUTE . "/list/{orderBy}/{direction}", self::LIST_ROUTE_NAME)]
+    /**
+     * @param string|null $orderBy
+     * @param string|null $direction
+     * @return Response
+     */
+    public function list(?string $orderBy = null, ?string $direction = null): Response
     {
-        return $this->CRMController->list($orderBy, $direction);
+        return $this->CRM->list($orderBy, $direction);
     }
 
-    #[Route(self::ROUTE_BASE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
-    public function addPage(Request $Request, ?int $id = null): Response
+    #[Route(self::BASE_ROUTE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
+    /**
+     * @param Request $request
+     * @param integer|null $id
+     * @return Response
+     */
+    public function add(Request $request, ?int $id = null): Response
     {
-        return $this->CRMController->add($Request, $id);
+        return $this->CRM->add($request, $id);
     }
 
-    #[Route(self::ROUTE_BASE . "/edit/{id}", self::EDIT_ROUTE_NAME)]
-    public function editPage(Request $Request, ?int $id = null): Response
+    #[Route(self::BASE_ROUTE . "/edit/{id}", self::EDIT_ROUTE_NAME, requirements: ["id" => "\d+"])]
+    /**
+     * @param Request $request
+     * @param integer|null $id
+     * @return Response
+     */
+    public function edit(Request $request, ?int $id = null): Response
     {
-        return $this->CRMController->edit($Request, $id);
+        return $this->CRM->edit($request, $id);
     }
 
-    #[Route(self::ROUTE_BASE . "/remove/{id}", self::REMOVE_ROUTE_NAME)]
-    public function removePage(?int $id = null): Response
+    #[Route(self::BASE_ROUTE . "/remove/{id}", self::REMOVE_ROUTE_NAME, requirements: ["id" => "\d+"])]
+    /**
+     * @param integer|null $id
+     * @return Response
+     */
+    public function remove(?int $id = null): Response
     {
-        return $this->CRMController->remove($id);
+        return $this->CRM->remove($id);
     }
 }

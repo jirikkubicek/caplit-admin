@@ -1,9 +1,0 @@
-class MyFirstException extends Exception {
-    public function __construct(private string $userMessage, Throwable $previous) {
-        parent::__construct($userMessage, 0, $previous);
-    }
-
-    public getUserMessage(): string {
-        $this->userMessage;
-    }
-}

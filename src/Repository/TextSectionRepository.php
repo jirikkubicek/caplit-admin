@@ -16,11 +16,19 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TextSectionRepository extends ServiceEntityRepository
 {
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TextSection::class);
     }
 
+    /**
+     * @param TextSection $entity
+     * @param boolean $flush
+     * @return void
+     */
     public function save(TextSection $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,11 @@ class TextSectionRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param TextSection $entity
+     * @param boolean $flush
+     * @return void
+     */
     public function remove(TextSection $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -38,29 +51,4 @@ class TextSectionRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-//    /**
-//     * @return TextSection[] Returns an array of TextSection objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?TextSection
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

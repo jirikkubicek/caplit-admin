@@ -6,27 +6,45 @@ use App\Repository\GalleryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GalleryRepository::class)]
-class Gallery implements CloneableEntityInterface
+class Gallery implements CRMEntityInterface
 {
+    /**
+     * @var integer|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * @var string|null
+     */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
+    /**
+     * @var string
+     */
     #[ORM\Column(length: 255)]
-    private ?string $filename = null;
+    private string $filename;
 
+    /**
+     * @var integer|null
+     */
     #[ORM\Column(name: "photo_order", nullable: true)]
     private ?int $photoOrder = null;
 
+    /**
+     * @return integer|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return self
+     */
     public function resetId(): self
     {
         $this->id = null;
@@ -34,11 +52,18 @@ class Gallery implements CloneableEntityInterface
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
+    /**
+     * @param string|null $title
+     * @return self
+     */
     public function setTitle(?string $title): self
     {
         $this->title = $title;
@@ -46,11 +71,18 @@ class Gallery implements CloneableEntityInterface
         return $this;
     }
 
-    public function getFilename(): ?string
+    /**
+     * @return string
+     */
+    public function getFilename(): string
     {
         return $this->filename;
     }
 
+    /**
+     * @param string $filename
+     * @return self
+     */
     public function setFilename(string $filename): self
     {
         $this->filename = $filename;
@@ -58,11 +90,18 @@ class Gallery implements CloneableEntityInterface
         return $this;
     }
 
+    /**
+     * @return integer|null
+     */
     public function getPhotoOrder(): ?int
     {
         return $this->photoOrder;
     }
 
+    /**
+     * @param integer|null $photoOrder
+     * @return self
+     */
     public function setPhotoOrder(?int $photoOrder): self
     {
         $this->photoOrder = $photoOrder;

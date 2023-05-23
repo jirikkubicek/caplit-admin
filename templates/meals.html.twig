@@ -47,7 +47,7 @@
             </tr>
         </thead>
         <tbody>
-            {% if Entities is not defined %}
+            {% if entities is not defined %}
                 <tr class="align-middle">
                     <td>Aktuálně není vytvořeno žádné jídlo</td>
                     <td></td>
@@ -56,17 +56,17 @@
                     <td></td>
                 </tr>
             {% else %}
-                {% for Meal in Entities %}
+                {% for meal in entities %}
                     <tr class="align-middle text-center">
-                        <td class="name text-start">{{ Meal.name }}</td>
-                        <td>{{ Meal.price }},- Kč</td>
-                        <td class="course">{{ Meal.section.name }}</td>
-                        <td>{{ Meal.course.name }}</td>
-                        <td>{{ Meal.invisible is same as true ? "Ano" : "Ne" }}</td>
+                        <td class="name text-start">{{ meal.name }}</td>
+                        <td>{{ meal.price }},- Kč</td>
+                        <td class="course">{{ meal.section.name }}</td>
+                        <td>{{ meal.course.name }}</td>
+                        <td>{{ meal.invisible is same as true ? "Ano" : "Ne" }}</td>
                         <td class="buttons">
-                            <a href="{{ path(edit_route_name, {id: Meal.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
-                            <a href="{{ path(remove_route_name, {id: Meal.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
-                            <a href="{{ path(add_route_name, {id: Meal.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
+                            <a href="{{ path(edit_route_name, {id: meal.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
+                            <a href="{{ path(remove_route_name, {id: meal.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
+                            <a href="{{ path(add_route_name, {id: meal.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
                         </td>
                     </tr>                
                 {% endfor %}

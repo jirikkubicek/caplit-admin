@@ -6,10 +6,10 @@ use GdImage;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class Image
+final class Image
 {
     /**
-     * @var array
+     * @var array<int,string>
      */
     private array $supportedMimeTypes = [
         "image/jpeg",
@@ -17,16 +17,16 @@ class Image
     ];
 
     /**
-     * @param UploadedFile $File
+     * @param UploadedFile $file
      * @param string $directoryPath
      * @param string|null $fileName
      * @return boolean
      */
-    public function upload(UploadedFile $File, string $directoryPath, ?string $fileName = null): bool
+    public function upload(UploadedFile $file, string $directoryPath, ?string $fileName = null): bool
     {
-        if ($File && $this->isFormatSupported($File->getMimeType())) {
-            $fileName = ($fileName === null ? $File->getClientOriginalName() : $fileName);
-            $File->move($directoryPath, $fileName); // To try / catch
+        if ($this->isFormatSupported((string)$file->getMimeType())) {
+            $fileName = ($fileName === null ? $file->getClientOriginalName() : $fileName);
+            $file->move($directoryPath, $fileName); // @todo: To try / catch
             if (file_exists($directoryPath . "/" . $fileName)) {
                 return true;
             }
@@ -41,8 +41,9 @@ class Image
      * @param string $sourcePath
      * @param integer $maxWidth
      * @param integer $maxHeight
-     * @param string $sufix
+     * @param string $suffix
      * @return boolean
+     * @throws \Exception
      */
     public function createThumbnail(
         string $originalFileName,
@@ -50,7 +51,7 @@ class Image
         string $sourcePath,
         int $maxWidth,
         int $maxHeight,
-        string $sufix = "_thumb"
+        string $suffix = "_thumb"
     ): bool {
         $sourcePathWithFileName = $sourcePath . "/" . $originalFileName;
         if (
@@ -58,10 +59,14 @@ class Image
             && $this->isFormatSupported(mime_content_type($sourcePathWithFileName))
         ) {
             $extension = $this->getFileNameExtension($originalFileName);
-            $thumbnailName = $this->getThumbnailName($originalFileName, $sufix);
+            $thumbnailName = $this->getThumbnailName($originalFileName, $suffix);
 
             $destinationPathWithFileName = $directoryPath . "/" . $thumbnailName;
-            list($sourceImageWidth, $sourceImageHeight) = getimagesize($sourcePathWithFileName);
+            list($sourceImageWidth, $sourceImageHeight) = (
+                is_array(getimagesize($sourcePathWithFileName)) ?
+                    getimagesize($sourcePathWithFileName) :
+                    []
+            );
 
             $width = $sourceImageWidth;
             $height = $sourceImageHeight;
@@ -78,7 +83,7 @@ class Image
             $thumbnail = imagecreatetruecolor($width, $height);
             $sourceImage = $this->getSourceImage($sourcePathWithFileName, $extension);
 
-            if ($sourceImage instanceof GdImage) {
+            if ($sourceImage instanceof GdImage && $thumbnail instanceof GdImage) {
                 $thumbnailCreateResult = imagecopyresampled(
                     $thumbnail,
                     $sourceImage,
@@ -106,18 +111,16 @@ class Image
                 throw new \Exception("Chyba při načítání zdrojového souboru");
             }
         } else {
-            //throw new \Exception("Nepodporovaný formát");
+            throw new \Exception("Nepodporovaný formát");
         }
-
-        return false;
     }
 
     /**
      * @param string $filename
-     * @param GdImage $Image
+     * @param GdImage $image
      * @return void
      */
-    private function fixImageOrientation(string $filename, GdImage &$Image): void
+    private function fixImageOrientation(string $filename, GdImage &$image): void
     {
         $exifData = @exif_read_data($filename);
 
@@ -128,33 +131,33 @@ class Image
                     break;
 
                 case 2: // horizontal flip
-                    imageflip($Image, 1);
+                    imageflip($image, 1);
                     break;
 
                 case 3: // 180 rotate left
-                    $Image = imagerotate($Image, 180, 0);
+                    $image = imagerotate($image, 180, 0);
                     break;
 
                 case 4: // vertical flip
-                    imageflip($Image, 2);
+                    imageflip($image, 2);
                     break;
 
                 case 5: // vertical flip + 90 rotate right
-                    imageflip($Image, 2);
-                    $Image = imagerotate($Image, -90, 0);
+                    imageflip($image, 2);
+                    $image = imagerotate($image, -90, 0);
                     break;
 
                 case 6: // 90 rotate right
-                    $Image = imagerotate($Image, -90, 0);
+                    $image = imagerotate($image, -90, 0);
                     break;
 
                 case 7: // horizontal flip + 90 rotate right
-                    imageflip($Image, 1);
-                    $Image = imagerotate($Image, -90, 0);
+                    imageflip($image, 1);
+                    $image = imagerotate($image, -90, 0);
                     break;
 
                 case 8:    // 90 rotate left
-                    $Image = imagerotate($Image, 90, 0);
+                    $image = imagerotate($image, 90, 0);
                     break;
             }
         }
@@ -162,12 +165,12 @@ class Image
 
     /**
      * @param string $fileName
-     * @param string $sufix
+     * @param string $suffix
      * @return string
      */
-    public function getThumbnailName(string $fileName, string $sufix): string
+    public function getThumbnailName(string $fileName, string $suffix): string
     {
-        return $this->getFileNameBase($fileName) . $sufix . "." . $this->getFileNameExtension($fileName);
+        return $this->getFileNameBase($fileName) . $suffix . "." . $this->getFileNameExtension($fileName);
     }
 
     /**
@@ -188,12 +191,17 @@ class Image
     public function getFileNameExtension(string $fileName): string
     {
         $parts = $this->getFileNameParts($fileName);
-        return array_pop($parts);
+
+        if (!empty($parts)) {
+            return array_pop($parts);
+        } else {
+            return "";
+        }
     }
 
     /**
      * @param string $fileName
-     * @return array
+     * @return array<int,string>
      */
     public function getFileNameParts(string $fileName): array
     {
@@ -207,15 +215,11 @@ class Image
      */
     private function getSourceImage(string $sourcePathWithFileName, string $extension): GdImage|false
     {
-        switch (strtolower($extension)) {
-            case "jpg":
-            case "jpeg":
-                return imagecreatefromjpeg($sourcePathWithFileName);
-            case "png":
-                return imagecreatefrompng($sourcePathWithFileName);
-            default:
-                return false;
-        }
+        return match (strtolower($extension)) {
+            "jpg", "jpeg" => imagecreatefromjpeg($sourcePathWithFileName),
+            "png" => imagecreatefrompng($sourcePathWithFileName),
+            default => false,
+        };
     }
 
     /**
@@ -226,15 +230,11 @@ class Image
      */
     private function exportThumbnail(GdImage $thumbnail, string $destinationPathWithFileName, string $extension): bool
     {
-        switch (strtolower($extension)) {
-            case "jpg":
-            case "jpeg":
-                return imagejpeg($thumbnail, $destinationPathWithFileName);
-            case "png":
-                return imagepng($thumbnail, $destinationPathWithFileName);
-            default:
-                return false;
-        }
+        return match (strtolower($extension)) {
+            "jpg", "jpeg" => imagejpeg($thumbnail, $destinationPathWithFileName),
+            "png" => imagepng($thumbnail, $destinationPathWithFileName),
+            default => false,
+        };
     }
 
     /**
@@ -251,10 +251,10 @@ class Image
     }
 
     /**
-     * @param string $mimeType
-     * @return boolean
+     * @param string|false $mimeType
+     * @return bool
      */
-    public function isFormatSupported(string $mimeType): bool
+    public function isFormatSupported(string|false $mimeType): bool
     {
         return in_array($mimeType, $this->supportedMimeTypes);
     }
@@ -272,8 +272,6 @@ class Image
             $uid .= mt_rand(0, 9);
         }
 
-        $uniqueFileName = $this->getFileNameBase($fileName) . $uid . "." . $this->getFileNameExtension($fileName);
-
-        return $uniqueFileName;
+        return $this->getFileNameBase($fileName) . $uid . "." . $this->getFileNameExtension($fileName);
     }
 }

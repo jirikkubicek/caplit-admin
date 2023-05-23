@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-interface BaseCRMControllerInterface
+interface CRMControllerInterface
 {
     /**
      * @param string|null $orderBy
@@ -15,18 +15,18 @@ interface BaseCRMControllerInterface
     public function list(?string $orderBy = null, ?string $direction = null): Response;
 
     /**
-     * @param Request $Request
+     * @param Request $request
      * @param integer|null $id
      * @return Response
      */
-    public function add(Request $Request, ?int $id = null): Response;
+    public function add(Request $request, ?int $id = null): Response;
 
     /**
-     * @param Request $Request
+     * @param Request $request
      * @param integer|null $id
      * @return Response
      */
-    public function edit(Request $Request, ?int $id): Response;
+    public function edit(Request $request, ?int $id): Response;
 
     /**
      * @param integer|null $id

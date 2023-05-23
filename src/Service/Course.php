@@ -2,85 +2,37 @@
 
 namespace App\Service;
 
-use App\Entity\Course as EntityCourse;
+use App\Entity\Course as CourseEntity;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\PersistentCollection;
 use Psr\Log\LoggerInterface;
 
-class Course extends BaseCRM implements CRMServiceInterface
+final class Course extends CRMService implements CRMServiceInterface
 {
     /**
-     * @param EntityManagerInterface $EntityManager
-     * @param LoggerInterface $Logger
+     * @param EntityManagerInterface $entityManager
+     * @param LoggerInterface $logger
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function __construct(EntityManagerInterface $EntityManager, LoggerInterface $Logger)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
-        parent::__construct($EntityManager, $Logger);
+        parent::__construct($entityManager, $logger);
 
-        $this->setEntityClassName(EntityCourse::class);
+        $this->setEntityClassName(CourseEntity::class);
     }
 
     /**
-     * @return EntityCourse
+     * @param CourseEntity $entity
+     * @return boolean
      */
-    private function getDefaultSection(): EntityCourse
+    public function remove(object $entity): bool
     {
-        return $this->findRecordBy(["is_default" => 1]);
-    }
-
-    /**
-     * @param PersistentCollection $Meals
-     * @return string|boolean
-     */
-    private function setDefaultOnChilds(PersistentCollection $Meals): string|bool
-    {
-        $editResult = true;
-
-        foreach ($Meals as $Meal) {
-            $Meal->setCourse($this->getDefaultSection());
-
-            if ($editResult === true) {
-                $editResult = $this->addOrEdit($Meal);
-            }
+        foreach ($entity->getMeals() as $meal) {
+            $entity->removeMeal($meal);
         }
 
-        return $editResult;
-    }
+        $removeChildrenResult = $entity->getMeals()->isEmpty();
+        $removeResult = parent::remove($entity);
 
-    /**
-     * @param object $Entity
-     * @return string|boolean
-     */
-    public function remove(object $Entity): string|bool
-    {
-        $changeToDefault = $this->setDefaultOnChilds($Entity->getMeals());
-        $removeResult = parent::remove($Entity);
-
-        if ($removeResult !== true) {
-            return $removeResult;
-        }
-
-        if ($changeToDefault !== true) {
-            return $changeToDefault;
-        }
-
-        return true;
-
-        /*
-        $changeToDefault = $this->setDefaultOnChilds($Entity->getMeals());
-
-
-        try {
-            parent::remove($Entity);
-        } catch (CannotBeSafelyRemoved $exception) {
-            return $exception->getUserMessage();
-        }
-
-        if($changeToDefault !== true) {
-            return $changeToDefault;
-        }
-
-        return true;
-        */
+        return $removeChildrenResult && $removeResult;
     }
 }

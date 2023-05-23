@@ -35,22 +35,22 @@
             </tr>
         </thead>
         <tbody>
-            {% if Entities is not defined %}
+            {% if entities is not defined %}
                 <tr class="align-middle">
                     <td colspan="2">Aktuálně není vytvořena žádná položka nastavení</td>
                     <td></td>
                     <td></td>
                 </tr>
             {% else %}
-                {% for Item in Entities %}
+                {% for item in entities %}
                     <tr class="align-middle text-center">
-                        <td class="name text-start">{{ Item.name }}</td>
-                        <td class="name text-start">{{ Item.caption }}</td>
-                        <td class="name text-start">{{ Item.value }}</td>
+                        <td class="name text-start">{{ item.name }}</td>
+                        <td class="name text-start">{{ item.caption }}</td>
+                        <td class="name text-start">{{ item.value }}</td>
                         <td class="buttons">
-                            <a href="{{ path(edit_route_name, {id: Item.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
-                            <a href="{{ path(remove_route_name, {id: Item.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
-                            <a href="{{ path(add_route_name, {id: Item.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
+                            <a href="{{ path(edit_route_name, {id: item.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
+                            <a href="{{ path(remove_route_name, {id: item.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
+                            <a href="{{ path(add_route_name, {id: item.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
                         </td>
                     </tr>                
                 {% endfor %}

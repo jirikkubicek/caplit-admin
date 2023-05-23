@@ -7,23 +7,20 @@ interface MessagesInterface
     /**
      * @param string $name
      * @param string $message
-     * @param string $action
-     * @param string|null $type
+     * @param string $type
      * @return self
      */
-    public function add(string $name, string $message, string $action = "", ?string $type = null): self;
+    public function add(string $name, string $message, string $type = ""): self;
 
     /**
-     * @param array $messages
+     * @param array<string,string|array<string,string>> $messages
      * @return self
      */
     public function addMessages(array $messages): self;
 
     /**
      * @param string $name
-     * @param string $action
-     * @param string|null $type
      * @return string
      */
-    public function get(string $name, string $action = "", ?string $type = null): string;
+    public function get(string $name): string;
 }
