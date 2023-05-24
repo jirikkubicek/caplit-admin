@@ -171,7 +171,7 @@ class Section implements CRMEntityInterface
     /**
      * @return boolean|null
      */
-    public function isIsDefault(): ?bool
+    public function isDefault(): ?bool
     {
         return $this->isDefault;
     }

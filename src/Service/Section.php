@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Section as SectionEntity;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -22,11 +23,25 @@ final class Section extends CRMService implements CRMServiceInterface
     /**
      * @param SectionEntity $entity
      * @return boolean
+     * @throws \Exception
      */
     public function remove(object $entity): bool
     {
-        $defaultSection = $this->findOneBy(["isDefault" => 1]);
-        if (!$defaultSection instanceof SectionEntity) {
+        $defaultSections = $this->findAllBy(["isDefault" => 1]);
+        if (in_array($entity, $defaultSections) && count($defaultSections) === 1) {
+            $thisIsLastDefault = true;
+        } else {
+            $thisIsLastDefault = false;
+        }
+
+        $defaultSection = null;
+        foreach ($defaultSections as $section) {
+            if ($entity !== $section) {
+                $defaultSection = $section;
+            }
+        }
+
+        if (!$defaultSection instanceof SectionEntity || $thisIsLastDefault === true) {
             throw new \Exception("At least one default section of type 'App\Entity\Section' must be created.");
         }
 

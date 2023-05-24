@@ -32,7 +32,7 @@ final class SectionController extends CRMController implements CRMControllerInte
         SectionService $service,
         ValidatorInterface $validator,
         MessagesInterface $messages,
-        Security $security
+        private Security $security
     ) {
         parent::__construct($validator, $messages);
 
@@ -91,9 +91,20 @@ final class SectionController extends CRMController implements CRMControllerInte
     /**
      * @param integer|null $id
      * @return Response
+     * @throws \Exception
      */
     public function remove(?int $id = null): Response
     {
+        $entity = $this->loadEntity($id);
+
+        if ($entity === null) {
+            return $this->redirectToList();
+        }
+
+        if ($entity?->isDefault() === true && !$this->security->isGranted("ROLE_ADMIN")) {
+            throw new \Exception("Default section may remove only administrator.");
+        }
+
         return parent::remove($id);
     }
 }

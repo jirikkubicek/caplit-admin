@@ -141,6 +141,16 @@ class CRMService implements CRMServiceInterface
     }
 
     /**
+     * @param array<string,mixed> $params
+     * @return array|object
+     * @throws Exception
+     */
+    public function findAllBy(array $params): array|object
+    {
+        return $this->getEntityRepository()->findBy($params);
+    }
+
+    /**
      * @param string $orderBy
      * @param string $direction
      * @return array<object>

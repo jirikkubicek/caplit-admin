@@ -443,7 +443,7 @@ class CRMController extends AbstractController
     /**
      * @return Response
      */
-    private function redirectToList(): Response
+    protected function redirectToList(): Response
     {
         return $this->redirectToRoute($this->getTemplateRoute(self::TEMPLATES_LIST_KEY_NAME));
     }

@@ -27,8 +27,21 @@ final class TextSection extends CRMService implements CRMServiceInterface
      */
     public function remove(object $entity): bool
     {
-        $defaultSection = $this->findOneBy(["isDefault" => 1]);
-        if (!$defaultSection instanceof TextSectionEntity) {
+        $defaultSections = $this->findAllBy(["isDefault" => 1]);
+        if (in_array($entity, $defaultSections) && count($defaultSections) === 1) {
+            $thisIsLastDefault = true;
+        } else {
+            $thisIsLastDefault = false;
+        }
+
+        $defaultSection = null;
+        foreach ($defaultSections as $section) {
+            if ($entity !== $section) {
+                $defaultSection = $section;
+            }
+        }
+
+        if (!$defaultSection instanceof TextSectionEntity || $thisIsLastDefault === true) {
             throw new \Exception("At least one default section of type 'App\Entity\TextSection' must be created.");
         }
 
