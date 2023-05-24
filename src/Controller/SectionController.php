@@ -101,8 +101,10 @@ final class SectionController extends CRMController implements CRMControllerInte
             return $this->redirectToList();
         }
 
-        if ($entity?->isDefault() === true && !$this->security->isGranted("ROLE_ADMIN")) {
-            throw new \Exception("Default section may remove only administrator.");
+        if ($entity instanceof Section) {
+            if ($entity->isDefault() === true && !$this->security->isGranted("ROLE_ADMIN")) {
+                throw new \Exception("Default section may remove only administrator.");
+            }
         }
 
         return parent::remove($id);

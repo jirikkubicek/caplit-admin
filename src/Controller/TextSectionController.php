@@ -99,8 +99,10 @@ final class TextSectionController extends CRMController implements CRMController
             return $this->redirectToList();
         }
 
-        if ($entity?->isDefault() === true && !$this->security->isGranted("ROLE_ADMIN")) {
-            throw new \Exception("Default section may remove only administrator.");
+        if ($entity instanceof TextSection) {
+            if ($entity->isDefault() === true && !$this->security->isGranted("ROLE_ADMIN")) {
+                throw new \Exception("Default section may remove only administrator.");
+            }
         }
 
         return parent::remove($id);

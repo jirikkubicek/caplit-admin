@@ -34,7 +34,7 @@ class SectionType extends AbstractType
                 ]
             )
             ->add(
-                "show_courses",
+                "showCourses",
                 CheckboxType::class,
                 [
                     "label" => "Zobrazovat chody",

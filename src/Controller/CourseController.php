@@ -102,8 +102,10 @@ final class CourseController extends CRMController implements CRMControllerInter
             return $this->redirectToList();
         }
 
-        if ($entity?->isDefault() === true && !$this->security->isGranted("ROLE_ADMIN")) {
-            throw new \Exception("Default course may remove only administrator.");
+        if ($entity instanceof CourseEntity) {
+            if ($entity->isDefault() === true && !$this->security->isGranted("ROLE_ADMIN")) {
+                throw new \Exception("Default course may remove only administrator.");
+            }
         }
 
         return parent::remove($id);
