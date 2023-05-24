@@ -10,7 +10,7 @@
             
             {% set directionParam = (app.request.get("direction")|lower == "asc") ? "desc" : "asc" %}
             {% set directionParamIcon = (app.request.get("direction")|lower == "asc") ? "keyboard_arrow_down" : "keyboard_arrow_up" %}
-            {% set activeSortItem = app.request.get("orderBy")|lower %}
+            {% set activeSortItem = app.request.get("orderBy") %}
 
             <tr class="text-center">
                 <th class="text-start ps-2">

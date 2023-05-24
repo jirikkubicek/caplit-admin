@@ -10,15 +10,15 @@
 
             {% set directionParam = (app.request.get("direction")|lower == "asc") ? "desc" : "asc" %}
             {% set directionParamIcon = (app.request.get("direction")|lower == "asc") ? "keyboard_arrow_down" : "keyboard_arrow_up" %}
-            {% set activeSortItem = app.request.get("orderBy")|lower %}
+            {% set activeSortItem = app.request.get("orderBy") %}
 
             <tr class="text-center">
                 <th>Náhled</th>
                 <th>Popisek</th>
                 <th>
-                    <a href="{{ path(list_route_name, {orderBy: "photo_order", direction: (activeSortItem == "photo_order") ? directionParam : "asc"}) }}">
+                    <a href="{{ path(list_route_name, {orderBy: "photoOrder", direction: (activeSortItem == "photoOrder") ? directionParam : "asc"}) }}">
                         {{ "Pořadí"|upper }} 
-                        <i class="material-icons sort-icon">{{ (activeSortItem == "photo_order") ? directionParamIcon : "keyboard_arrow_up" }}</i>
+                        <i class="material-icons sort-icon">{{ (activeSortItem == "photoOrder") ? directionParamIcon : "keyboard_arrow_up" }}</i>
                     </a>
                 </th>
                 <th></th>

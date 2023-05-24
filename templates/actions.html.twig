@@ -10,7 +10,7 @@
             
             {% set directionParam = (app.request.get("direction")|lower == "asc") ? "desc" : "asc" %}
             {% set directionParamIcon = (app.request.get("direction")|lower == "asc") ? "keyboard_arrow_down" : "keyboard_arrow_up" %}
-            {% set activeSortItem = app.request.get("orderBy")|lower %}
+            {% set activeSortItem = app.request.get("orderBy") %}
 
             <tr class="text-center">
                 <th class="text-start ps-2">
@@ -20,15 +20,15 @@
                     </a>
                 </th>
                 <th>
-                    <a href="{{ path(list_route_name, {orderBy: "date_from", direction: (activeSortItem == "date_from") ? directionParam : "asc"}) }}">
+                    <a href="{{ path(list_route_name, {orderBy: "dateFrom", direction: (activeSortItem == "dateFrom") ? directionParam : "asc"}) }}">
                         {{ "Platné od"|upper }} 
-                        <i class="material-icons sort-icon">{{ (activeSortItem == "date_from") ? directionParamIcon : "keyboard_arrow_up" }}</i>
+                        <i class="material-icons sort-icon">{{ (activeSortItem == "dateFrom") ? directionParamIcon : "keyboard_arrow_up" }}</i>
                     </a>
                 </th>
                 <th>
-                    <a href="{{ path(list_route_name, {orderBy: "date_to", direction: (activeSortItem == "date_to") ? directionParam : "asc"}) }}">
+                    <a href="{{ path(list_route_name, {orderBy: "dateTo", direction: (activeSortItem == "dateTo") ? directionParam : "asc"}) }}">
                         {{ "Platné do"|upper }} 
-                        <i class="material-icons sort-icon">{{ (activeSortItem == "date_to") ? directionParamIcon : "keyboard_arrow_up" }}</i>
+                        <i class="material-icons sort-icon">{{ (activeSortItem == "dateTo") ? directionParamIcon : "keyboard_arrow_up" }}</i>
                     </a>
                 </th>
                 <th></th>

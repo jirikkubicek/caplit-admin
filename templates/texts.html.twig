@@ -10,7 +10,7 @@
                     
             {% set directionParam = (app.request.get("direction")|lower == "asc") ? "desc" : "asc" %}
             {% set directionParamIcon = (app.request.get("direction")|lower == "asc") ? "keyboard_arrow_down" : "keyboard_arrow_up" %}
-            {% set activeSortItem = app.request.get("orderBy")|lower %}
+            {% set activeSortItem = app.request.get("orderBy") %}
 
             <tr class="text-center">
                 <th class="text-start ps-2">
@@ -20,9 +20,9 @@
                     </a>
                 </th>
                 <th>
-                    <a href="{{ path(list_route_name, {orderBy: "text_section", direction: (activeSortItem == "text_section") ? directionParam : "asc"}) }}">
+                    <a href="{{ path(list_route_name, {orderBy: "textSection", direction: (activeSortItem == "textSection") ? directionParam : "asc"}) }}">
                         {{ "Sekce"|upper }}
-                        <i class="material-icons sort-icon">{{ (activeSortItem == "text_section") ? directionParamIcon : "keyboard_arrow_up" }}</i>
+                        <i class="material-icons sort-icon">{{ (activeSortItem == "textSection") ? directionParamIcon : "keyboard_arrow_up" }}</i>
                     </a>
                 </th>
                 <th></th>
