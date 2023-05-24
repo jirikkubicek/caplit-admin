@@ -31,7 +31,10 @@ class TextsType extends AbstractType
             ->add(
                 "text",
                 TextareaType::class,
-                ["label" => "Text"]
+                [
+                    "label" => "Text",
+                    "required" => false
+                ]
             )
             ->add(
                 "textSection",
