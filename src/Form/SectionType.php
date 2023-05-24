@@ -42,6 +42,16 @@ class SectionType extends AbstractType
                 ]
             )
             ->add(
+                "isDefault",
+                CheckboxType::class,
+                [
+                    "label" => ($options["isAdmin"] ? "Výchozí sekce" : false),
+                    "required" => false,
+                    "mapped" => $options["isAdmin"],
+                    "attr" => ["class" => ($options["isAdmin"] ? "" : "d-none")]
+                ]
+            )
+            ->add(
                 "submit",
                 SubmitType::class,
                 ["label" => $options["submitLabel"]]
@@ -54,7 +64,11 @@ class SectionType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault("submitLabel", "Potvrdit");
+        $resolver->setDefaults([
+            "submitLabel" => "Potvrdit",
+            "isAdmin" => false
+        ]);
         $resolver->setAllowedTypes("submitLabel", "string");
+        $resolver->setAllowedTypes("isAdmin", "bool");
     }
 }

@@ -19,23 +19,38 @@
                         <i class="material-icons sort-icon">{{ (activeSortItem == "name") ? directionParamIcon : "keyboard_arrow_up" }}</i>
                     </a>
                 </th>
+                <th>
+                    <a href="{{ path(list_route_name, {orderBy: "isDefault", direction: (activeSortItem == "isDefault") ? directionParam : "asc"}) }}">
+                        {{ "Výchozí"|upper }}
+                        <i class="material-icons sort-icon">{{ (activeSortItem == "isDefault") ? directionParamIcon : "keyboard_arrow_up" }}</i>
+                    </a>
+                </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             {% if entities is not defined %}
                 <tr class="align-middle">
-                    <td>Aktuálně není vytvořena žádná sekce</td>
+                    <td colspan="2">Aktuálně není vytvořena žádná sekce</td>
                     <td></td>
                 </tr>
             {% else %}
                 {% for section in entities %}
                     <tr class="align-middle text-center">
                         <td class="name text-start">{{ section.name }}</td>
+                        <td>{{ section.isDefault is same as true ? "Ano" : "Ne" }}</td>
                         <td class="buttons">
-                            <a href="{{ path(edit_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
-                            <a href="{{ path(remove_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
-                            <a href="{{ path(add_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
+                            {% if section.isDefault is same as true %}
+                                {% if is_granted("ROLE_ADMIN") %}
+                                    <a href="{{ path(edit_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
+                                    <a href="{{ path(remove_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
+                                    <a href="{{ path(add_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ path(edit_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
+                                <a href="{{ path(remove_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
+                                <a href="{{ path(add_route_name, {id: section.id}) }}" class="btn btn-primary btn-sm my-1">Kopírovat</a>
+                            {% endif %}
                         </td>
                     </tr>                
                 {% endfor %}

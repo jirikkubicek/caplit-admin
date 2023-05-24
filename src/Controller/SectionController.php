@@ -6,6 +6,7 @@ use App\Entity\Section;
 use App\Form\Type\SectionType;
 use App\Service\CRMController;
 use App\Service\Section as SectionService;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,13 +27,15 @@ final class SectionController implements CRMControllerInterface
      */
     public function __construct(
         SectionService $service,
-        private CRMController $CRM
+        private CRMController $CRM,
+        Security $security
     ) {
         $service->setEntityClassName(Section::class);
 
         $this->CRM
             ->setEntityClassName(Section::class)
             ->setFormTypeName(SectionType::class)
+            ->setFormOptions(["isAdmin" => $security->isGranted("ROLE_ADMIN")])
             ->setService($service)
             ->setListAction(self::LIST_ROUTE_NAME, "sections.html.twig")
             ->setAddAction(self::ADD_ROUTE_NAME)

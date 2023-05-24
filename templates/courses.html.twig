@@ -19,19 +19,26 @@
                         <i class="material-icons sort-icon">{{ (activeSortItem == "name") ? directionParamIcon : "keyboard_arrow_up" }}</i>
                     </a>
                 </th>
+                <th>
+                    <a href="{{ path(list_route_name, {orderBy: "isDefault", direction: (activeSortItem == "isDefault") ? directionParam : "asc"}) }}">
+                        {{ "Výchozí"|upper }}
+                        <i class="material-icons sort-icon">{{ (activeSortItem == "isDefault") ? directionParamIcon : "keyboard_arrow_up" }}</i>
+                    </a>
+                </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             {% if entities is not defined %}
                 <tr class="align-middle">
-                    <td>Aktuálně není vytvořen žádný chod</td>
+                    <td colspan="2">Aktuálně není vytvořen žádný chod</td>
                     <td></td>
                 </tr>
             {% else %}
                 {% for Course in entities %}
                     <tr class="align-middle text-center">
                         <td class="name text-start">{{ Course.name }}</td>
+                        <td>{{ Course.isDefault is same as true ? "Ano" : "Ne" }}</td>
                         <td class="buttons">
                             {% if Course.isDefault is same as true %}
                                 {% if is_granted("ROLE_ADMIN") %}

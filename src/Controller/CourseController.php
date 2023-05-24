@@ -6,6 +6,7 @@ use App\Entity\Course as CourseEntity;
 use App\Form\Type\CourseType;
 use App\Service\Course;
 use App\Service\CRMController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,13 +27,15 @@ final class CourseController implements CRMControllerInterface
      */
     public function __construct(
         Course $service,
-        private CRMController $CRM
+        private CRMController $CRM,
+        Security $security
     ) {
         $service->setEntityClassName(CourseEntity::class);
 
         $this->CRM
             ->setEntityClassName(CourseEntity::class)
             ->setFormTypeName(CourseType::class)
+            ->setFormOptions(["isAdmin" => $security->isGranted("ROLE_ADMIN")])
             ->setService($service)
             ->setListAction(self::LIST_ROUTE_NAME, "courses.html.twig")
             ->setAddAction(self::ADD_ROUTE_NAME)

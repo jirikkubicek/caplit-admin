@@ -6,6 +6,7 @@ use App\Entity\TextSection;
 use App\Form\Type\TextSectionType;
 use App\Service\CRMController;
 use App\Service\TextSection as TextSectionService;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,11 +27,13 @@ final class TextSectionController implements CRMControllerInterface
      */
     public function __construct(
         TextSectionService $service,
-        private CRMController $CRM
+        private CRMController $CRM,
+        Security $security
     ) {
         $this->CRM
             ->setEntityClassName(TextSection::class)
             ->setFormTypeName(TextSectionType::class)
+            ->setFormOptions(["isAdmin" => $security->isGranted("ROLE_ADMIN")])
             ->setService($service)
             ->setListAction(self::LIST_ROUTE_NAME, "text_sections.html.twig")
             ->setAddAction(self::ADD_ROUTE_NAME)
