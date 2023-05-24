@@ -5,16 +5,17 @@ namespace App\Controller;
 use App\Entity\Meal;
 use App\Form\Type\MealType;
 use App\Service\Course;
-use App\Service\CRMController;
 use App\Service\Meal as ServiceMeal;
+use App\Service\MessagesInterface;
 use App\Service\Section;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[IsGranted("IS_AUTHENTICATED")]
-final class MealController implements CRMControllerInterface
+final class MealController extends CRMController implements CRMControllerInterface
 {
     private const BASE_ROUTE = "/meal";
     private const LIST_ROUTE_NAME = "meal_list";
@@ -26,15 +27,19 @@ final class MealController implements CRMControllerInterface
      * @param ServiceMeal $service
      * @param Section $sectionService
      * @param Course $courseService
-     * @param CRMController $CRM
+     * @param ValidatorInterface $validator
+     * @param MessagesInterface $messages
      */
     public function __construct(
         ServiceMeal $service,
         Section $sectionService,
         Course $courseService,
-        private CRMController $CRM
+        ValidatorInterface $validator,
+        MessagesInterface $messages
     ) {
-        $this->CRM
+        parent::__construct($validator, $messages);
+
+        $this
             ->setEntityClassName(Meal::class)
             ->setFormTypeName(MealType::class)
             ->setFormOptions([
@@ -61,7 +66,7 @@ final class MealController implements CRMControllerInterface
      */
     public function list(?string $orderBy = null, ?string $direction = null): Response
     {
-        return $this->CRM->list($orderBy, $direction);
+        return parent::list($orderBy, $direction);
     }
 
     #[Route(self::BASE_ROUTE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -72,7 +77,7 @@ final class MealController implements CRMControllerInterface
      */
     public function add(Request $request, ?int $id = null): Response
     {
-        return $this->CRM->add($request, $id);
+        return parent::add($request, $id);
     }
 
     #[Route(self::BASE_ROUTE . "/edit/{id}", self::EDIT_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -83,7 +88,7 @@ final class MealController implements CRMControllerInterface
      */
     public function edit(Request $request, ?int $id = null): Response
     {
-        return $this->CRM->edit($request, $id);
+        return parent::edit($request, $id);
     }
 
     #[Route(self::BASE_ROUTE . "/remove/{id}", self::REMOVE_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -93,6 +98,6 @@ final class MealController implements CRMControllerInterface
      */
     public function remove(?int $id = null): Response
     {
-        return $this->CRM->remove($id);
+        return parent::remove($id);
     }
 }

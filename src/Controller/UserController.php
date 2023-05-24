@@ -4,15 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Users;
 use App\Form\Type\UserType;
-use App\Service\CRMController;
+use App\Service\MessagesInterface;
 use App\Service\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[IsGranted("IS_AUTHENTICATED")]
-final class UserController implements CRMControllerInterface
+final class UserController extends CRMController implements CRMControllerInterface
 {
     private const BASE_ROUTE = "/users";
     private const LIST_ROUTE_NAME = "users_list";
@@ -21,14 +22,18 @@ final class UserController implements CRMControllerInterface
     private const REMOVE_ROUTE_NAME = "users_remove";
 
     /**
-     * @param CRMController $CRM
+     * @param ValidatorInterface $validator
+     * @param MessagesInterface $messages
      * @param User $service
      */
     public function __construct(
-        private CRMController $CRM,
+        ValidatorInterface $validator,
+        MessagesInterface $messages,
         User $service
     ) {
-        $this->CRM
+        parent::__construct($validator, $messages);
+
+        $this
             ->setEntityClassName(Users::class)
             ->setService($service)
             ->setFormTypeName(UserType::class)
@@ -51,7 +56,7 @@ final class UserController implements CRMControllerInterface
     #[Route(self::BASE_ROUTE . "/list/{orderBy}/{direction}", self::LIST_ROUTE_NAME)]
     public function list(?string $orderBy = null, ?string $direction = null): Response
     {
-        return $this->CRM->list($orderBy, $direction);
+        return parent::list($orderBy, $direction);
     }
 
     /**
@@ -62,9 +67,9 @@ final class UserController implements CRMControllerInterface
     #[Route(self::BASE_ROUTE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
     public function add(Request $request, ?int $id = null): Response
     {
-        $this->CRM->setFormOptions(["mode" => "add"]);
+        $this->setFormOptions(["mode" => "add"]);
 
-        return $this->CRM->add($request, $id);
+        return parent::add($request, $id);
     }
 
     /**
@@ -75,17 +80,17 @@ final class UserController implements CRMControllerInterface
     #[Route(self::BASE_ROUTE . "/edit/{id}", self::EDIT_ROUTE_NAME, requirements: ["id" => "\d+"])]
     public function edit(Request $request, ?int $id): Response
     {
-        $this->CRM->setFormOptions(["mode" => "edit"]);
+        $this->setFormOptions(["mode" => "edit"]);
 
-        $service = $this->CRM->getService();
+        $service = $this->getService();
         if ($service instanceof User) {
-            $originPassword = (string) $this->CRM->loadEntity($id)?->getPassword();
+            $originPassword = (string) $this->loadEntity($id)?->getPassword();
             $service->setOriginPassword($originPassword);
         } else {
             throw new \Exception(sprintf("%s needs to have service of type %s", self::class, User::class));
         }
 
-        return $this->CRM->edit($request, $id);
+        return parent::edit($request, $id);
     }
 
     /**
@@ -95,6 +100,6 @@ final class UserController implements CRMControllerInterface
     #[Route(self::BASE_ROUTE . "/remove/{id}", self::REMOVE_ROUTE_NAME, requirements: ["id" => "\d+"])]
     public function remove(?int $id): Response
     {
-        return $this->CRM->remove($id);
+        return parent::remove($id);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Controller;
 
 use App\Entity\CRMEntityInterface;
 use App\Service\CRMServiceInterface;

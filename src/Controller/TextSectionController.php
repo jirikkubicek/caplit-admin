@@ -4,16 +4,17 @@ namespace App\Controller;
 
 use App\Entity\TextSection;
 use App\Form\Type\TextSectionType;
-use App\Service\CRMController;
+use App\Service\MessagesInterface;
 use App\Service\TextSection as TextSectionService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[IsGranted("IS_AUTHENTICATED")]
-final class TextSectionController implements CRMControllerInterface
+final class TextSectionController extends CRMController implements CRMControllerInterface
 {
     private const BASE_ROUTE = "/text_section";
     private const LIST_ROUTE_NAME = "text_section_list";
@@ -23,14 +24,19 @@ final class TextSectionController implements CRMControllerInterface
 
     /**
      * @param TextSectionService $service
-     * @param CRMController $CRM
+     * @param ValidatorInterface $validator
+     * @param MessagesInterface $messages
+     * @param Security $security
      */
     public function __construct(
         TextSectionService $service,
-        private CRMController $CRM,
+        ValidatorInterface $validator,
+        MessagesInterface $messages,
         Security $security
     ) {
-        $this->CRM
+        parent::__construct($validator, $messages);
+
+        $this
             ->setEntityClassName(TextSection::class)
             ->setFormTypeName(TextSectionType::class)
             ->setFormOptions(["isAdmin" => $security->isGranted("ROLE_ADMIN")])
@@ -54,7 +60,7 @@ final class TextSectionController implements CRMControllerInterface
      */
     public function list(?string $orderBy = null, ?string $direction = null): Response
     {
-        return $this->CRM->list($orderBy, $direction);
+        return parent::list($orderBy, $direction);
     }
 
     #[Route(self::BASE_ROUTE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -65,7 +71,7 @@ final class TextSectionController implements CRMControllerInterface
      */
     public function add(Request $request, ?int $id = null): Response
     {
-        return $this->CRM->add($request, $id);
+        return parent::add($request, $id);
     }
 
     #[Route(self::BASE_ROUTE . "/edit/{id}", self::EDIT_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -76,7 +82,7 @@ final class TextSectionController implements CRMControllerInterface
      */
     public function edit(Request $request, ?int $id = null): Response
     {
-        return $this->CRM->edit($request, $id);
+        return parent::edit($request, $id);
     }
 
     #[Route(self::BASE_ROUTE . "/remove/{id}", self::REMOVE_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -86,6 +92,6 @@ final class TextSectionController implements CRMControllerInterface
      */
     public function remove(?int $id = null): Response
     {
-        return $this->CRM->remove($id);
+        return parent::remove($id);
     }
 }

@@ -4,16 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Settings as EntitySettings;
 use App\Form\Type\SettingsType;
-use App\Service\CRMController;
 use App\Service\CRMService;
+use App\Service\MessagesInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[IsGranted("IS_AUTHENTICATED")]
-final class SettingsController implements CRMControllerInterface
+final class SettingsController extends CRMController implements CRMControllerInterface
 {
     private const BASE_ROUTE = "/settings";
     private const LIST_ROUTE_NAME = "settings_list";
@@ -23,17 +24,22 @@ final class SettingsController implements CRMControllerInterface
 
     /**
      * @param CRMService $service
+     * @param ValidatorInterface $validator
+     * @param MessagesInterface $messages
      * @param Security $security
-     * @param CRMController $CRM
+     * @throws \Doctrine\DBAL\Exception
      */
     public function __construct(
         CRMService $service,
-        Security $security,
-        private CRMController $CRM
+        ValidatorInterface $validator,
+        MessagesInterface $messages,
+        Security $security
     ) {
+        parent::__construct($validator, $messages);
+
         $service->setEntityClassName(EntitySettings::class);
 
-        $this->CRM
+        $this
             ->setEntityClassName(EntitySettings::class)
             ->setFormTypeName(SettingsType::class)
             ->setFormOptions([
@@ -59,7 +65,7 @@ final class SettingsController implements CRMControllerInterface
      */
     public function list(?string $orderBy = null, ?string $direction = null): Response
     {
-        return $this->CRM->list($orderBy, $direction);
+        return parent::list($orderBy, $direction);
     }
 
     #[Route(self::BASE_ROUTE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -70,7 +76,7 @@ final class SettingsController implements CRMControllerInterface
      */
     public function add(Request $request, ?int $id = null): Response
     {
-        return $this->CRM->add($request, $id);
+        return parent::add($request, $id);
     }
 
     #[Route(self::BASE_ROUTE . "/edit/{id}", self::EDIT_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -81,7 +87,7 @@ final class SettingsController implements CRMControllerInterface
      */
     public function edit(Request $request, ?int $id = null): Response
     {
-        return $this->CRM->edit($request, $id);
+        return parent::edit($request, $id);
     }
 
     #[Route(self::BASE_ROUTE . "/remove/{id}", self::REMOVE_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -91,6 +97,6 @@ final class SettingsController implements CRMControllerInterface
      */
     public function remove(?int $id = null): Response
     {
-        return $this->CRM->remove($id);
+        return parent::remove($id);
     }
 }

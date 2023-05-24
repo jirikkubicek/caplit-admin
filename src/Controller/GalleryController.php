@@ -4,15 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Gallery as EntityGallery;
 use App\Form\Type\GalleryType;
-use App\Service\CRMController;
 use App\Service\Gallery;
+use App\Service\MessagesInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[IsGranted("IS_AUTHENTICATED")]
-final class GalleryController implements CRMControllerInterface
+final class GalleryController extends CRMController implements CRMControllerInterface
 {
     private const BASE_ROUTE = "/gallery";
     private const LIST_ROUTE_NAME = "gallery_list";
@@ -22,15 +23,20 @@ final class GalleryController implements CRMControllerInterface
 
     /**
      * @param Gallery $service
-     * @param CRMController $CRM
+     * @param ValidatorInterface $validator
+     * @param MessagesInterface $messages
+     * @throws \Doctrine\DBAL\Exception
      */
     public function __construct(
         Gallery $service,
-        private CRMController $CRM
+        ValidatorInterface $validator,
+        MessagesInterface $messages
     ) {
+        parent::__construct($validator, $messages);
+
         $service->setEntityClassName(EntityGallery::class);
 
-        $this->CRM
+        $this
             ->setEntityClassName(EntityGallery::class)
             ->setFormTypeName(GalleryType::class)
             ->setService($service)
@@ -53,7 +59,7 @@ final class GalleryController implements CRMControllerInterface
      */
     public function list(?string $orderBy = null, ?string $direction = null): Response
     {
-        return $this->CRM->list($orderBy, $direction);
+        return parent::list($orderBy, $direction);
     }
 
     #[Route(self::BASE_ROUTE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -64,7 +70,7 @@ final class GalleryController implements CRMControllerInterface
      */
     public function add(Request $request, ?int $id = null): Response
     {
-        return $this->CRM->add($request, $id);
+        return parent::add($request, $id);
     }
 
     #[Route(self::BASE_ROUTE . "/edit/{id}", self::EDIT_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -75,7 +81,7 @@ final class GalleryController implements CRMControllerInterface
      */
     public function edit(Request $request, ?int $id = null): Response
     {
-        return $this->CRM->edit($request, $id);
+        return parent::edit($request, $id);
     }
 
     #[Route(self::BASE_ROUTE . "/remove/{id}", self::REMOVE_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -85,6 +91,6 @@ final class GalleryController implements CRMControllerInterface
      */
     public function remove(?int $id = null): Response
     {
-        return $this->CRM->remove($id);
+        return parent::remove($id);
     }
 }
