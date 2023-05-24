@@ -4,12 +4,14 @@ namespace App\Entity;
 
 use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Stringable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-class Users implements PasswordAuthenticatedUserInterface, UserInterface, Stringable
+#[UniqueEntity('username', "Uživatel s tímto uživatelským jménem již existuje")]
+class Users implements PasswordAuthenticatedUserInterface, UserInterface, \Stringable, CRMEntityInterface
 {
     /**
      * @var integer|null
@@ -23,24 +25,28 @@ class Users implements PasswordAuthenticatedUserInterface, UserInterface, String
      * @var string
      */
     #[ORM\Column(length: 100)]
+    #[Assert\NotNull]
     private string $username;
 
     /**
-     * @var string
+     * @var string|null
      */
     #[ORM\Column(length: 255)]
-    private string $password;
+    private ?string $password;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 100)]
+    #[Assert\Email]
+    #[Assert\NotNull]
     private ?string $email = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(length: 100)]
+    #[Assert\NotNull]
     private ?string $name = null;
 
     /**
@@ -55,6 +61,16 @@ class Users implements PasswordAuthenticatedUserInterface, UserInterface, String
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetId(): self
+    {
+        $this->id = null;
+
+        return $this;
     }
 
     /**
@@ -77,18 +93,18 @@ class Users implements PasswordAuthenticatedUserInterface, UserInterface, String
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
     /**
-     * @param string $password
+     * @param string|null $password
      * @return self
      */
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
 

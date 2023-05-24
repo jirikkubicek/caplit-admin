@@ -5,6 +5,7 @@ namespace App\Service;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\MappingException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -164,7 +165,18 @@ class CRMService implements CRMServiceInterface
      */
     public function entityHasProperty(string $propertyName): bool
     {
-        $columns = $this->entityManager->getClassMetadata($this->getEntityClassName())->getColumnNames();
+        $columns = [];
+
+        try {
+            $columns = $this->entityManager->getClassMetadata(
+                $this->getEntityClassName()
+            )->getFieldMapping($propertyName);
+        } catch (MappingException $exception) {
+            $columns = $this->entityManager->getClassMetadata(
+                $this->getEntityClassName()
+            )->getColumnNames();
+        }
+
         foreach (
             $this->entityManager->getClassMetadata(
                 $this->getEntityClassName()

@@ -65,7 +65,7 @@ class CRMController extends AbstractController
     /**
      * @return CRMServiceInterface
      */
-    private function getService(): CRMServiceInterface
+    public function getService(): CRMServiceInterface
     {
         return $this->service;
     }
@@ -411,7 +411,7 @@ class CRMController extends AbstractController
      * @param integer|null $id
      * @return object|null
      */
-    private function loadEntity(?int $id): ?object
+    public function loadEntity(?int $id): ?object
     {
         if ($this->checkIfIDWasFilled($id)) {
             $entity = $this->getService()->findOneBy(["id" => $id]);
@@ -522,7 +522,7 @@ class CRMController extends AbstractController
         if ($entity instanceof CRMEntityInterface) {
             return $entity->getId() === null;
         } else {
-            throw new Exception("Entity has to have method getId()");
+            throw new Exception("Entity has to be instance of 'CRMEntityInterface'");
         }
     }
 }
