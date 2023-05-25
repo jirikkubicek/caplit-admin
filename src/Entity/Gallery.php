@@ -23,10 +23,10 @@ class Gallery implements CRMEntityInterface
     private ?string $title = null;
 
     /**
-     * @var string
+     * @var string|null
      */
     #[ORM\Column(length: 255)]
-    private string $filename;
+    private ?string $filename = null;
 
     /**
      * @var integer|null
@@ -72,9 +72,9 @@ class Gallery implements CRMEntityInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFilename(): string
+    public function getFilename(): ?string
     {
         return $this->filename;
     }

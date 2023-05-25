@@ -53,45 +53,52 @@ final class Gallery extends CRMService implements CRMServiceInterface
     {
         $file = $this->getForm()->get("filename")->getData();
 
-        if (!$file instanceof UploadedFile) {
-            throw new Exception("\$file has to be type of Symfony\Component\HttpFoundation\File\UploadedFile");
-        }
-
-        $newImageFilename = $this->imageService->generateUniqueFileName($file->getClientOriginalName());
-        $oldImageFilename = $entity->getFilename();
-
-        $uploaded = $this->imageService->upload(
-            $file,
-            $this->getGalleryDirectory(),
-            $newImageFilename
-        );
-        $thumbCreated = $this->imageService->createThumbnail(
-            $newImageFilename,
-            $this->getThumbnailDirectory(),
-            $this->getGalleryDirectory(),
-            220,
-            500,
-            self::THUMBNAIL_SUFIX
-        );
-
-        if ($uploaded && $thumbCreated) {
-            if ($oldImageFilename !== null) {
-                $this->imageService->delete($oldImageFilename, $this->getGalleryDirectory());
-                $this->imageService->delete($this->imageService->getThumbnailName(
-                    $oldImageFilename,
-                    self::THUMBNAIL_SUFIX
-                ), $this->getThumbnailDirectory());
+        if ($file !== null) {
+            if (!$file instanceof UploadedFile) {
+                throw new Exception(
+                    sprintf(
+                        "\$file has to be type of Symfony\Component\HttpFoundation\File\UploadedFile. %s given.",
+                        gettype($file)
+                    )
+                );
             }
 
-            $entity->setFilename($newImageFilename);
-        } else {
-            $this->imageService->delete($newImageFilename, $this->getGalleryDirectory());
-            $this->imageService->delete($this->imageService->getThumbnailName(
-                $newImageFilename,
-                self::THUMBNAIL_SUFIX
-            ), $this->getThumbnailDirectory());
+            $newImageFilename = $this->imageService->generateUniqueFileName($file->getClientOriginalName());
+            $oldImageFilename = $entity->getFilename();
 
-            return false;
+            $uploaded = $this->imageService->upload(
+                $file,
+                $this->getGalleryDirectory(),
+                $newImageFilename
+            );
+            $thumbCreated = $this->imageService->createThumbnail(
+                $newImageFilename,
+                $this->getThumbnailDirectory(),
+                $this->getGalleryDirectory(),
+                220,
+                500,
+                self::THUMBNAIL_SUFIX
+            );
+
+            if ($uploaded && $thumbCreated) {
+                if ($oldImageFilename !== null) {
+                    $this->imageService->delete($oldImageFilename, $this->getGalleryDirectory());
+                    $this->imageService->delete($this->imageService->getThumbnailName(
+                        $oldImageFilename,
+                        self::THUMBNAIL_SUFIX
+                    ), $this->getThumbnailDirectory());
+                }
+
+                $entity->setFilename($newImageFilename);
+            } else {
+                $this->imageService->delete($newImageFilename, $this->getGalleryDirectory());
+                $this->imageService->delete($this->imageService->getThumbnailName(
+                    $newImageFilename,
+                    self::THUMBNAIL_SUFIX
+                ), $this->getThumbnailDirectory());
+
+                return false;
+            }
         }
 
         return parent::addOrEdit($entity);
@@ -103,11 +110,13 @@ final class Gallery extends CRMService implements CRMServiceInterface
      */
     public function remove(object $entity): bool
     {
-        $this->imageService->delete($entity->getFilename(), $this->getGalleryDirectory());
-        $this->imageService->delete($this->imageService->getThumbnailName(
-            $entity->getFilename(),
-            self::THUMBNAIL_SUFIX
-        ), $this->getThumbnailDirectory());
+        if ($entity->getFilename() !== null) {
+            $this->imageService->delete($entity->getFilename(), $this->getGalleryDirectory());
+            $this->imageService->delete($this->imageService->getThumbnailName(
+                $entity->getFilename(),
+                self::THUMBNAIL_SUFIX
+            ), $this->getThumbnailDirectory());
+        }
 
         return parent::remove($entity);
     }

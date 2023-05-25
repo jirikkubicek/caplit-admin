@@ -43,6 +43,7 @@ class GalleryType extends AbstractType
                 [
                     "label" => "Obrázek",
                     "mapped" => false,
+                    "required" => $options["mode"] === "add",
                     "constraints" => [
                         new File(
                             [
@@ -70,7 +71,11 @@ class GalleryType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(["submitLabel" => "Potvrdit"]);
+        $resolver->setDefaults([
+            "submitLabel" => "Potvrdit",
+            "mode" => "add"
+        ]);
         $resolver->setAllowedTypes("submitLabel", "string");
+        $resolver->setAllowedTypes("mode", "string");
     }
 }

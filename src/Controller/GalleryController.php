@@ -62,15 +62,16 @@ final class GalleryController extends CRMController implements CRMControllerInte
         return parent::list($orderBy, $direction);
     }
 
-    #[Route(self::BASE_ROUTE . "/add/{id}", self::ADD_ROUTE_NAME, requirements: ["id" => "\d+"])]
+    #[Route(self::BASE_ROUTE . "/add", self::ADD_ROUTE_NAME)]
     /**
      * @param Request $request
      * @param integer|null $id
      * @return Response
      */
-    public function add(Request $request, ?int $id = null): Response
+    public function addPage(Request $request): Response
     {
-        return parent::add($request, $id);
+        $this->setFormOptions(["mode" => "add"]);
+        return parent::add($request, null);
     }
 
     #[Route(self::BASE_ROUTE . "/edit/{id}", self::EDIT_ROUTE_NAME, requirements: ["id" => "\d+"])]
@@ -81,6 +82,7 @@ final class GalleryController extends CRMController implements CRMControllerInte
      */
     public function edit(Request $request, ?int $id = null): Response
     {
+        $this->setFormOptions(["mode" => "edit"]);
         return parent::edit($request, $id);
     }
 
