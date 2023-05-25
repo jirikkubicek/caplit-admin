@@ -2,6 +2,6 @@
 
 {% block optional %}
     {% if form.vars.data.filename is not empty %}
-        <img src="{{ asset('uploaded/gallery/thumbnail/' ~ form.vars.data.filename) }}" />
+        <img src="{{ asset('uploaded/gallery/thumbnail/' ~ form.vars.data.filename) }}" alt="{{ form.vars.data.title }}" />
     {% endif %}
 {% endblock %}

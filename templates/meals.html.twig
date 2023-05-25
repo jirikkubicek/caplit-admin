@@ -49,19 +49,16 @@
         <tbody>
             {% if entities is not defined %}
                 <tr class="align-middle">
-                    <td>Aktuálně není vytvořeno žádné jídlo</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td colspan="5">Aktuálně není vytvořeno žádné jídlo</td>
                     <td></td>
                 </tr>
             {% else %}
                 {% for meal in entities %}
                     <tr class="align-middle text-center">
-                        <td class="name text-start">{{ meal.name }}</td>
+                        <td class="long-item text-start">{{ meal.name }}</td>
                         <td>{{ meal.price }},- Kč</td>
-                        <td class="course">{{ meal.section.name }}</td>
-                        <td>{{ meal.course.name }}</td>
+                        <td class="long-item">{{ meal.section.name }}</td>
+                        <td class="long-item">{{ meal.course.name }}</td>
                         <td>{{ meal.invisible is same as true ? "Ano" : "Ne" }}</td>
                         <td class="buttons">
                             <a href="{{ path(edit_route_name, {id: meal.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
@@ -73,29 +70,4 @@
             {% endif %}
         </tbody>
     </table>
-
-    <style>
-        td.name {
-            min-width: 250px !important;
-            white-space: normal !important;
-        }
-
-        td.course {
-            min-width: 220px !important;
-            white-space: normal !important;
-        }
-
-        td.buttons {
-            white-space: normal !important;
-        }
-
-        .ws-normal {
-            white-space: normal !important;
-        }
-
-        i.sort-icon {
-            vertical-align: middle;
-            margin-top: -5px;
-        }
-    </style>
 {% endblock %}

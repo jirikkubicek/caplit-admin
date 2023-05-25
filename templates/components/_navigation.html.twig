@@ -21,50 +21,50 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('sections_show') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                <a href="{{ path('sections_show') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
                     <i class="material-icons flex-shrink-1">format_list_bulleted</i>
                     <span class="nav-link-text ms-1 w-100">Sekce</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('course_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                <a href="{{ path('course_list') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
                     <i class="material-icons flex-shrink-1">format_list_bulleted</i>
                     <span class="nav-link-text ms-1 w-100">Chody</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('actions_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                <a href="{{ path('actions_list') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
                     <i class="material-icons flex-shrink-1">format_list_bulleted</i>
                     <span class="nav-link-text ms-1 w-100">Akce</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('texts_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                <a href="{{ path('texts_list') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
                     <i class="material-icons flex-shrink-1">format_list_bulleted</i>
                     <span class="nav-link-text ms-1 w-100">Texty</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('text_section_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                <a href="{{ path('text_section_list') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
                     <i class="material-icons flex-shrink-1">format_list_bulleted</i>
                     <span class="nav-link-text ms-1 w-100">Texty - sekce</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('gallery_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                <a href="{{ path('gallery_list') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
                     <i class="material-icons flex-shrink-1">image</i>
                     <span class="nav-link-text ms-1 w-100">Galerie</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('settings_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                <a href="{{ path('settings_list') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
                     <i class="material-icons flex-shrink-1">settings</i>
                     <span class="nav-link-text ms-1 w-100">Nastavení</span>
                 </a>
             </li>
             {% if is_granted("ROLE_ADMIN") %}
                 <li class="nav-item">
-                    <a href="{{ path('users_list') }}" class="nav-link  text-white d-flex me-2 text-center align-items-center justify-content-between">
+                    <a href="{{ path('users_list') }}" class="nav-link text-white d-flex me-2 text-center align-items-center justify-content-between">
                         <i class="material-icons flex-shrink-1">man</i>
                         <span class="nav-link-text ms-1 w-100">Uživatelé</span>
                     </a>

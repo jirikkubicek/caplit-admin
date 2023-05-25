@@ -37,15 +37,13 @@
         <tbody>
             {% if entities is not defined %}
                 <tr class="align-middle">
-                    <td>Aktuálně není vytvořena žádná akce</td>
-                    <td></td>
-                    <td></td>
+                    <td colspan="3">Aktuálně není vytvořena žádná akce</td>
                     <td></td>
                 </tr>
             {% else %}
                 {% for Action in entities %}
                     <tr class="align-middle text-center">
-                        <td class="name text-start">{{ Action.header }}</td>
+                        <td class="long-item text-start">{{ Action.header }}</td>
                         <td>{{ Action.dateFrom|date("m/d/Y") }}</td>
                         <td>{{ Action.dateTo|date("m/d/Y") }}</td>
                         <td class="buttons">
@@ -58,24 +56,4 @@
             {% endif %}
         </tbody>
     </table>
-
-    <style>
-        td.name {
-            min-width: 300px !important;
-            white-space: normal !important;
-        }
-
-        td.buttons {
-            white-space: normal !important;
-        }
-
-        .ws-normal {
-            white-space: normal !important;
-        }
-
-        i.sort-icon {
-            vertical-align: middle;
-            margin-top: -5px;
-        }
-    </style>
 {% endblock %}

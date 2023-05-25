@@ -31,15 +31,14 @@
         <tbody>
             {% if entities is not defined %}
                 <tr class="align-middle">
-                    <td>Aktuálně není vytvořený žádný text</td>
-                    <td></td>
+                    <td colspan="2">Aktuálně není vytvořený žádný text</td>
                     <td></td>
                 </tr>
             {% else %}
                 {% for text in entities %}
                     <tr class="align-middle text-center">
-                        <td class="name text-start">{{ text.header }}</td>
-                        <td>{{ text.textSection.name }}</td>
+                        <td class="long-item text-start">{{ text.header }}</td>
+                        <td class="long-item">{{ text.textSection.name }}</td>
                         <td class="buttons">
                             <a href="{{ path(edit_route_name, {id: text.id}) }}" class="btn btn-primary btn-sm my-1">Upravit</a>
                             <a href="{{ path(remove_route_name, {id: text.id}) }}" class="btn btn-primary btn-sm my-1">Smazat</a>
@@ -50,24 +49,4 @@
             {% endif %}
         </tbody>
     </table>
-    
-    <style>
-        td.name {
-            min-width: 300px !important;
-            white-space: normal !important;
-        }
-
-        td.buttons {
-            white-space: normal !important;
-        }
-
-        .ws-normal {
-            white-space: normal !important;
-        }
-
-        i.sort-icon {
-            vertical-align: middle;
-            margin-top: -5px;
-        }
-    </style>
 {% endblock %}

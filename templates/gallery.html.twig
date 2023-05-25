@@ -27,8 +27,7 @@
         <tbody class="align-middle">
             {% if entities is not defined %}
                 <tr class="align-middle">
-                    <td colspan="2">Aktuálně není nahrán žádný obrázek</td>
-                    <td></td>
+                    <td colspan="3">Aktuálně není nahrán žádný obrázek</td>
                     <td></td>
                 </tr>
             {% else %}
@@ -46,19 +45,4 @@
             {% endif %}
         </tbody>
     </table>
-
-    <style>
-        td.thumbnail {
-            width: 300px;
-        }
-
-        td.buttons {
-            white-space: normal !important;
-        }
-
-        i.sort-icon {
-            vertical-align: middle;
-            margin-top: -5px;
-        }
-    </style>
 {% endblock %}
