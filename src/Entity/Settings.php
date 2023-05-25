@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SettingsRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -28,7 +29,7 @@ class Settings implements CRMEntityInterface
     /**
      * @var string|null
      */
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $value = null;
 
     /**
